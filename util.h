@@ -8,10 +8,10 @@
 #include "listA.h"
 
 enum algoritm{
-    FIFO, // First In First Out 
-    SC,  // Second Chance
-    MRU, // Most Recently Used
-    RDN // Random
+    FIFO = 1, // First In First Out 
+    SC = 2,  // Second Chance
+    MRU = 3, // Most Recently Used
+    RDN = 4 // Random
     };
 
 struct start
@@ -22,6 +22,16 @@ struct start
     int NumberProcess; // Number of processes
     int amoutOperations; // Number of operations
 };
+
+struct start crearPreparación(int seed, enum algoritm option, FILE *file, int NumberProcess, int amoutOperations){
+    struct start start;
+    start.seed = seed;
+    start.option = option;
+    start.file = file;
+    start.NumberProcess = NumberProcess;
+    start.amoutOperations = amoutOperations;
+    return start;
+}
 
 //Ejemplo de file
 //      FILE *archivo;

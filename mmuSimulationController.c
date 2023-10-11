@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "util.h"
+#include "matriz.h"
 
 //Widgets del menu
 GtkWidget* windowMenu;
@@ -111,7 +113,9 @@ void selectAlgorithm(GtkWidget *widget, gpointer data) {
 }
 
 void init_simulacion(){
-
+    srand(1200); // Semilla para generar numeros aleatorios
+    struct start preparacion = crearPreparación(1400, algoritmoSeleccionado, NULL, numProcesos, numOperaciones);
+    printf("Se ha creado el archivo de simulacion semilla: %d, option: %d, numero de proceso: %d, numero de Operaciones: %d\n", preparacion.seed, preparacion.option, preparacion.NumberProcess, preparacion.amoutOperations);
 }
 
 int main(int argc, char *argv[]){
