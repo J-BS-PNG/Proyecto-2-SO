@@ -66,11 +66,10 @@
             <property name="can-focus">False</property>
             <property name="homogeneous">True</property>
             <child>
-              <object class="GtkButton" id="pid_button">
-                <property name="label" translatable="yes">Nuevo PID</property>
+              <object class="GtkLabel">
                 <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">Semilla Random</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -79,10 +78,9 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="num_random">
+              <object class="GtkEntry" id="semilla_entry">
                 <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="label" translatable="yes">num_random</property>
+                <property name="can-focus">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>

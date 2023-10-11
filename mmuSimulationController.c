@@ -13,7 +13,7 @@ GtkWidget* windowMenu;
 GtkWidget* pidLabel;
 GtkWidget* archivoLabel;
 
-GtkWidget* pidButton;
+GtkWidget* semillaEntry;
 GtkWidget* processSpinButton;
 GtkWidget* operationSpinButton;
 GtkWidget* cargarButton;
@@ -68,9 +68,7 @@ void actualizarCantOperaciones( GtkWidget *widget, GdkEventButton *event, gpoint
     g_print("Cantidad de operaciones: %d\n", numOperaciones);
 }
 
-void init_simulacion(){
 
-}
 void selectAlgorithm(GtkWidget *widget, gpointer data) {
     // Obtener los estados de los checkboxes y sus identificadores
     gboolean fifoChecked = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(fifoCheck));
@@ -111,6 +109,11 @@ void selectAlgorithm(GtkWidget *widget, gpointer data) {
 
     g_print("Algoritmo seleccionado: %d\n", algoritmoSeleccionado);
 }
+
+void init_simulacion(){
+
+}
+
 int main(int argc, char *argv[]){
     GtkBuilder *builder; //GTK builder
     gtk_init(&argc, &argv); //start gtk
@@ -143,8 +146,9 @@ GtkGrid* selectAlgorithmTable;
     windowMenu = GTK_WIDGET(gtk_builder_get_object(builder, "window_menu")); //load window named MyWindow
     gtk_window_set_default_size(GTK_WINDOW(windowMenu), 800, 500);
 
+    //entry
+    semillaEntry = GTK_WIDGET(gtk_builder_get_object(builder, "semilla_entry")); 
     //botones
-    pidButton = GTK_WIDGET(gtk_builder_get_object(builder, "pid_button")); 
     processSpinButton = GTK_WIDGET(gtk_builder_get_object(builder, "num_Proceso")); 
 	operationSpinButton = GTK_WIDGET(gtk_builder_get_object(builder, "num_operaciones"));
     cargarButton = GTK_WIDGET(gtk_builder_get_object(builder, "cargar_archivo_menu"));
@@ -171,6 +175,8 @@ GtkGrid* selectAlgorithmTable;
     g_signal_connect( scCheck, "toggled", G_CALLBACK(selectAlgorithm), NULL );
     g_signal_connect( mruCheck, "toggled", G_CALLBACK(selectAlgorithm), NULL );
     g_signal_connect( rndCheck, "toggled", G_CALLBACK(selectAlgorithm), NULL );
+    
+    g_signal_connect( iniciarSimulacionButton, "clicked", G_CALLBACK(init_simulacion), NULL );
 
     gtk_builder_connect_signals(builder, NULL);
     
