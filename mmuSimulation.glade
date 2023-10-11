@@ -2,6 +2,57 @@
 <!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
+  <object class="GtkFileChooserDialog">
+    <property name="can-focus">False</property>
+    <property name="type-hint">dialog</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can-focus">False</property>
+            <property name="layout-style">end</property>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Cargar</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkAdjustment" id="numP">
+    <property name="upper">100</property>
+    <property name="step-increment">10</property>
+    <property name="page-increment">1</property>
+  </object>
+  <object class="GtkAdjustment" id="numProcesos">
+    <property name="upper">5000</property>
+    <property name="step-increment">500</property>
+    <property name="page-increment">1</property>
+  </object>
   <object class="GtkWindow" id="window_menu">
     <property name="can-focus">False</property>
     <child>
@@ -15,7 +66,7 @@
             <property name="can-focus">False</property>
             <property name="homogeneous">True</property>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="pid_button">
                 <property name="label" translatable="yes">Nuevo PID</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
@@ -55,6 +106,7 @@
               <object class="GtkSpinButton" id="num_Proceso">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
+                <property name="adjustment">numP</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -78,6 +130,7 @@
               <object class="GtkSpinButton" id="num_operaciones">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
+                <property name="adjustment">numProcesos</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -161,7 +214,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkCheckButton">
+                  <object class="GtkCheckButton" id="fifo_check">
                     <property name="label" translatable="yes"> </property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
@@ -174,7 +227,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkCheckButton">
+                  <object class="GtkCheckButton" id="sc_check">
                     <property name="label" translatable="yes"> </property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
@@ -187,7 +240,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkCheckButton">
+                  <object class="GtkCheckButton" id="mru_check">
                     <property name="label" translatable="yes"> </property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
@@ -200,7 +253,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkCheckButton">
+                  <object class="GtkCheckButton" id="rnd_check">
                     <property name="label" translatable="yes"> </property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
@@ -232,7 +285,7 @@
             <property name="can-focus">False</property>
             <property name="homogeneous">True</property>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="cargar_archivo_menu">
                 <property name="label" translatable="yes">Cargar Archivo</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
@@ -264,7 +317,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton">
+          <object class="GtkButton" id="init">
             <property name="label" translatable="yes">Iniciar Simulación</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>

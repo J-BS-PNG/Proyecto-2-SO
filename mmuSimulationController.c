@@ -19,7 +19,18 @@ GtkWidget* operationSpinButton;
 GtkWidget* cargarButton;
 GtkWidget* iniciarSimulacionButton;
 
+GtkWidget* fifoCheck;
+GtkWidget* scCheck;
+GtkWidget* mruCheck;
+GtkWidget* rndCheck;
+
 GtkGrid* selectAlgorithmTable;
+
+//variables del menu
+int numProcesos;
+int numOperaciones;
+int algoritmoSeleccionado;
+int pID;
 
 //widgets de la simulacion
 
@@ -45,37 +56,121 @@ static void load_css(void){
     g_object_unref(provider);
 }
 
+void actualizarCantProcesos( GtkWidget *widget, GdkEventButton *event, gpointer object )
+{
+    numProcesos = gtk_spin_button_get_value_as_int((GtkSpinButton*) processSpinButton);
+    g_print("Cantidad de Procesos: %d\n", numProcesos);
+}
+
+void actualizarCantOperaciones( GtkWidget *widget, GdkEventButton *event, gpointer object )
+{
+    numOperaciones = gtk_spin_button_get_value_as_int((GtkSpinButton*) operationSpinButton);
+    g_print("Cantidad de operaciones: %d\n", numOperaciones);
+}
+
+void init_simulacion(){
+
+}
+void selectAlgorithm(GtkWidget *widget, gpointer data) {
+    // Obtener los estados de los checkboxes y sus identificadores
+    gboolean fifoChecked = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(fifoCheck));
+    gboolean scChecked = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(scCheck));
+    gboolean mruChecked = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(mruCheck));
+    gboolean rndChecked = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rndCheck));
+
+    // Desmarcar los checkboxes que no están seleccionados
+    if (fifoChecked) {
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(scCheck), FALSE);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mruCheck), FALSE);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(rndCheck), FALSE);
+    } else if (scChecked) {
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fifoCheck), FALSE);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mruCheck), FALSE);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(rndCheck), FALSE);
+    } else if (mruChecked) {
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fifoCheck), FALSE);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(scCheck), FALSE);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(rndCheck), FALSE);
+    } else if (rndChecked) {
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fifoCheck), FALSE);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(scCheck), FALSE);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mruCheck), FALSE);
+    }
+
+    // Almacenar el valor correspondiente
+    if (fifoChecked) {
+        algoritmoSeleccionado = 1;
+    } else if (scChecked) {
+        algoritmoSeleccionado = 2;
+    } else if (mruChecked) {
+        algoritmoSeleccionado = 3;
+    } else if (rndChecked) {
+        algoritmoSeleccionado = 4;
+    }
+
+
+    g_print("Algoritmo seleccionado: %d\n", algoritmoSeleccionado);
+}
 int main(int argc, char *argv[]){
     GtkBuilder *builder; //GTK builder
     gtk_init(&argc, &argv); //start gtk
 
+    /*GtkWidget* windowMenu;
+
+
+GtkWidget* pidLabel;
+GtkWidget* archivoLabel;
+
+GtkWidget* pidButton;
+GtkWidget* processSpinButton;
+GtkWidget* operationSpinButton;
+GtkWidget* cargarButton;
+GtkWidget* iniciarSimulacionButton;
+
+GtkWidget* fifoCheck;
+GtkWidget* scCheck;
+GtkWidget* mruCheck;
+GtkWidget* rndCheck;
+
+GtkGrid* selectAlgorithmTable;
+*/
+
     builder = gtk_builder_new(); //create gtk ui builder
-    gtk_builder_add_from_file(builder, "arbolesBinariosDeBusqueda.glade", NULL); //LOAD UI FILE
+    gtk_builder_add_from_file(builder, "mmuSimulation.glade", NULL); //LOAD UI FILE
     
     load_css();
     //ventana
-    window = GTK_WIDGET(gtk_builder_get_object(builder, "MyWindow")); //load window named MyWindow
-    gtk_window_set_default_size(GTK_WINDOW(window), 800, 500);
-
+    windowMenu = GTK_WIDGET(gtk_builder_get_object(builder, "window_menu")); //load window named MyWindow
+    gtk_window_set_default_size(GTK_WINDOW(windowMenu), 800, 500);
 
     //botones
-    cantKeys = GTK_WIDGET(gtk_builder_get_object(builder, "cant_Key")); 
-    respuesta = GTK_WIDGET(gtk_builder_get_object(builder, "respuesta_button")); 
-	cargar = GTK_WIDGET(gtk_builder_get_object(builder, "cargar_button"));
-    guardar = GTK_WIDGET(gtk_builder_get_object(builder, "guardar_button"));
-    salir = GTK_WIDGET(gtk_builder_get_object(builder, "salir_button"));
+    pidButton = GTK_WIDGET(gtk_builder_get_object(builder, "pid_button")); 
+    processSpinButton = GTK_WIDGET(gtk_builder_get_object(builder, "num_Proceso")); 
+	operationSpinButton = GTK_WIDGET(gtk_builder_get_object(builder, "num_operaciones"));
+    cargarButton = GTK_WIDGET(gtk_builder_get_object(builder, "cargar_archivo_menu"));
+    iniciarSimulacionButton = GTK_WIDGET(gtk_builder_get_object(builder, "init"));
+
+    fifoCheck = GTK_WIDGET(gtk_builder_get_object(builder, "fifo_check")); 
+	scCheck = GTK_WIDGET(gtk_builder_get_object(builder, "sc_check"));
+    mruCheck = GTK_WIDGET(gtk_builder_get_object(builder, "mru_check"));
+    rndCheck = GTK_WIDGET(gtk_builder_get_object(builder, "rnd_check"));
 
     
-
     //GRIDS
-    treeData = GTK_GRID(gtk_builder_get_object(builder, "tree_Data"));
-    treeTable = GTK_GRID(gtk_builder_get_object(builder, "respuesta_table"));
+    selectAlgorithmTable = GTK_GRID(gtk_builder_get_object(builder, "select_algorithm"));
+
 
     //ASIGN VARIABLES
 
 
     //connect signals
-    g_signal_connect( cantKeys, "activate", G_CALLBACK(actualizarCantJuego), NULL );
+    g_signal_connect( processSpinButton, "activate", G_CALLBACK(actualizarCantProcesos), NULL );
+    g_signal_connect( operationSpinButton, "activate", G_CALLBACK(actualizarCantOperaciones), NULL );
+
+    g_signal_connect( fifoCheck, "toggled", G_CALLBACK(selectAlgorithm), NULL );
+    g_signal_connect( scCheck, "toggled", G_CALLBACK(selectAlgorithm), NULL );
+    g_signal_connect( mruCheck, "toggled", G_CALLBACK(selectAlgorithm), NULL );
+    g_signal_connect( rndCheck, "toggled", G_CALLBACK(selectAlgorithm), NULL );
 
     gtk_builder_connect_signals(builder, NULL);
     
@@ -84,8 +179,53 @@ int main(int argc, char *argv[]){
     
 
 
-    gtk_widget_show_all(window); //show window
+    gtk_widget_show_all(windowMenu); //show window
     gtk_main(); //run
 
     return 0;
 }
+
+//PARA MANEJO DE ARCHIVOS; por definir
+/*void cargar_estado(){
+	char *filename;
+    filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(FileChooserWindow));
+    FILE * fp;
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    fp = fopen(filename, "r");
+    if (fp == NULL){
+        exit(EXIT_FAILURE);
+	}
+	int n = -1;
+    while ((read = getline(&line, &len, fp)) != -1) {
+		char*arrays = strtok(line, " ");
+		int j = 0;
+		while (arrays != NULL){
+			if(n==-1){
+			    games = atoi(arrays);
+    			probGanarCasa = s_to_f(strtok(NULL, " "));
+                probGanarVisita = s_to_f(strtok(NULL, " "));
+				break;
+			}
+			juegoEnCasa[j+1] = atoi(arrays);
+			arrays = strtok(NULL, " ");
+			j++;
+		}
+		n++;
+    }
+	cargar();
+    fclose(fp);
+    if(line){
+        free(line);
+	}
+	gtk_widget_set_visible(FileChooserWindow, false);
+}
+
+void open_fileChooser(GtkWidget* widget, gpointer data)
+{
+	filter = gtk_file_filter_new();
+    gtk_file_filter_add_pattern(filter, "*.std");
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(FileChooserWindow), filter);
+    gtk_dialog_run (GTK_DIALOG (FileChooserWindow));
+}*/
