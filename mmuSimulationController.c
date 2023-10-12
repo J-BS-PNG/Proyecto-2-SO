@@ -131,9 +131,18 @@ void selectAlgorithm(GtkWidget *widget, gpointer data) {
 }
 
 void init_simulacion(){
-    srand(1200); // Semilla para generar numeros aleatorios
-    struct start preparacion = crearPreparación(1400, algoritmoSeleccionado, NULL, numProcesos, numOperaciones);
+    // Se crea una structura que guarda los datos de la simulacion
+    struct start preparacion = crearPreparación(semilla, algoritmoSeleccionado, NULL, numProcesos, numOperaciones);
     printf("Se ha creado el archivo de simulacion semilla: %d, option: %d, numero de proceso: %d, numero de Operaciones: %d\n", preparacion.seed, preparacion.option, preparacion.NumberProcess, preparacion.amoutOperations);
+    srand(preparacion.seed); // Semilla para generar numeros aleatorios
+    struct Matrix mat = createMatrix(preparacion.NumberProcess, 2); // Se crea la matriz de los punteros y procesos
+    createSimulationTxt(preparacion.NumberProcess, preparacion.amoutOperations, &mat); // Se crea el archivo de simulacion
+    preparacion.file = fopen("simulation.txt", "r"); // Se abre el archivo de simulacion
+    if(preparacion.file == NULL){
+        printf("Error al abrir el archivo");
+        return;
+    }
+    freeMatrix(&mat); // Se libera la memoria de la matriz
 }
 
 int main(int argc, char *argv[]){

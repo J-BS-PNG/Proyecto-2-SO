@@ -114,7 +114,7 @@ void createSimulationTxt(int sizeProcess, int sizeOperations, struct Matrix *mat
         case 0:
             int newOption = rand()%2;
             int sizeBytes = rand()%10000;
-            if(newOption == 0 && listProcess.longitud != sizeProcess){
+            if(newOption == 0 && listProcess.longitud != sizeProcess && sizeActualProcess != sizeProcess){
                 fprintf(archivo, "new(%d,%d)\n", sizeActualProcess+1, sizeBytes);
                 appendElementTwo(mat, sizePTR, sizeActualProcess+1);
                 agregarElemento(&listProcess, sizeActualProcess+1);
@@ -143,16 +143,16 @@ void createSimulationTxt(int sizeProcess, int sizeOperations, struct Matrix *mat
             struct Matrix aux = deleteElementProcess(mat, randProcess);
             mat = &aux;
             saveProcessKill++;
-            printf("Nueva tabla con proceso eliminado: %d\n", randProcess);
-            printMatrix(mat);
+            // printf("Nueva tabla con proceso eliminado: %d\n", randProcess);
+            // printMatrix(mat);
             break;
         
         default:
             break;
         }
     }
-    printf("Tabla final\n");
-    printMatrix(mat);
+    // printf("Tabla final\n");
+    // printMatrix(mat);
     for(int i = 0; i < listProcess.longitud; i++){
         fprintf(archivo, "kill(%d)\n", obtenerElemento(&listProcess, i));
     }
