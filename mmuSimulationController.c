@@ -32,7 +32,7 @@ GtkGrid* selectAlgorithmTable;
 int numProcesos;
 int numOperaciones;
 int algoritmoSeleccionado;
-int pID;
+int semilla;
 
 //widgets de la simulacion
 
@@ -68,6 +68,24 @@ void actualizarCantOperaciones( GtkWidget *widget, GdkEventButton *event, gpoint
 {
     numOperaciones = gtk_spin_button_get_value_as_int((GtkSpinButton*) operationSpinButton);
     g_print("Cantidad de operaciones: %d\n", numOperaciones);
+}
+
+void actualizarSemilla(GtkEntry *entry, gpointer user_data) {
+    // Obtener el texto del GtkEntry
+    const gchar *semillaTexto = gtk_entry_get_text(entry);
+    
+    // Validar si el texto es un número entero
+    char *endptr;
+    long semillaP = strtol(semillaTexto, &endptr, 10);
+
+    // Si el texto es un número entero válido, hacer algo con el valor (por ejemplo, almacenarlo en una variable global)
+    if (*endptr == '\0') {
+        semilla = semillaP;
+        g_print("Semilla: %d\n", semilla);
+    } else {
+        // Si el texto no es un número entero válido, puedes mostrar un mensaje de error o manejarlo según tus necesidades
+        g_print("Error: Semilla no válida\n");
+    }
 }
 
 
@@ -122,25 +140,6 @@ int main(int argc, char *argv[]){
     GtkBuilder *builder; //GTK builder
     gtk_init(&argc, &argv); //start gtk
 
-    /*GtkWidget* windowMenu;
-
-
-GtkWidget* pidLabel;
-GtkWidget* archivoLabel;
-
-GtkWidget* pidButton;
-GtkWidget* processSpinButton;
-GtkWidget* operationSpinButton;
-GtkWidget* cargarButton;
-GtkWidget* iniciarSimulacionButton;
-
-GtkWidget* fifoCheck;
-GtkWidget* scCheck;
-GtkWidget* mruCheck;
-GtkWidget* rndCheck;
-
-GtkGrid* selectAlgorithmTable;
-*/
 
     builder = gtk_builder_new(); //create gtk ui builder
     gtk_builder_add_from_file(builder, "mmuSimulation.glade", NULL); //LOAD UI FILE
@@ -172,28 +171,33 @@ GtkGrid* selectAlgorithmTable;
 
 
     //connect signals
-    g_signal_connect( processSpinButton, "activate", G_CALLBACK(actualizarCantProcesos), NULL );
-    g_signal_connect( operationSpinButton, "activate", G_CALLBACK(actualizarCantOperaciones), NULL );
+    g_signal_connect( processSpinButton, "value-changed", G_CALLBACK(actualizarCantProcesos), NULL );
+    g_signal_connect( operationSpinButton, "value-changed", G_CALLBACK(actualizarCantOperaciones), NULL );
 
     g_signal_connect( fifoCheck, "toggled", G_CALLBACK(selectAlgorithm), NULL );
     g_signal_connect( scCheck, "toggled", G_CALLBACK(selectAlgorithm), NULL );
     g_signal_connect( mruCheck, "toggled", G_CALLBACK(selectAlgorithm), NULL );
     g_signal_connect( rndCheck, "toggled", G_CALLBACK(selectAlgorithm), NULL );
-    
+
+    g_signal_connect(semillaEntry, "changed", G_CALLBACK(actualizarSemilla), NULL);
+
     g_signal_connect( iniciarSimulacionButton, "clicked", G_CALLBACK(init_simulacion), NULL );
+
 
     gtk_builder_connect_signals(builder, NULL);
     
 
     g_object_unref(builder);
     
-
+    g_signal_connect(windowMenu, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
     gtk_widget_show_all(windowMenu); //show window
     gtk_main(); //run
 
     return 0;
 }
+
+
 
 //PARA MANEJO DE ARCHIVOS; por definir
 /*void cargar_estado(){
