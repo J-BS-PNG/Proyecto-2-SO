@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 struct Matrix {
     int **data;     // Puntero a los datos de la matriz
     int rows;       // Número de filas
@@ -73,6 +72,34 @@ void appendElementTwo(struct Matrix *matrix, int value, int value2) {
     matrix->size++;
 }
 
+// Funcion agregar elementos a la matriz que sea de estructura de punteros, procesos, tamaño
+void appendElementPuntero(struct Matrix *matrix, int proceso, int tamanno) {
+    if(matrix->size == matrix->rows) {
+        addRows(matrix, matrix->rows*2);
+    }
+    matrix->data[matrix->size][0] = matrix->size + 1;
+    matrix->data[matrix->size][1] = proceso;
+    matrix->data[matrix->size][2] = tamanno;
+    matrix->size++;
+}
+
+
+void appendElementPagina(struct Matrix *matrix, int ptr, int ram,int dicRam , int timeStamp, int bit) {
+    if(matrix->size == matrix->rows) {
+        addRows(matrix, matrix->rows*2);
+    }
+    matrix->data[matrix->size][0] = matrix->size + 1;
+    matrix->data[matrix->size][1] = ptr;
+    matrix->data[matrix->size][2] = ram;
+    matrix->data[matrix->size][3] = dicRam;
+    if(matrix->size != 0)
+        matrix->data[matrix->size][4] = matrix->data[matrix->size-1][4]+1;
+    else
+        matrix->data[matrix->size][4] = 0;
+    matrix->data[matrix->size][5] = bit;
+    matrix->size++;
+}
+
 //Funccion que devuelve un ptr de la matriz de forma random
 
 int getPTRRamdon(struct Matrix *matrix){
@@ -121,7 +148,6 @@ void deleteElement(struct Matrix *matrix,int ptr) {
 }
 
 // Funcion para elimina procesos de la matriz
-
 struct Matrix deleteElementProcess(struct Matrix *matrix, int process){
     if (matrix == NULL || matrix->size == 0) {
         // Manejo de error: matriz nula o tamaño igual a cero
@@ -138,6 +164,7 @@ struct Matrix deleteElementProcess(struct Matrix *matrix, int process){
     }
     return matrixAux;
 }
+
 
 // Función para liberar la memoria de una matriz
 void freeMatrix(struct Matrix *matrix) {
