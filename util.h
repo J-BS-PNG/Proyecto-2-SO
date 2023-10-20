@@ -90,7 +90,7 @@ void createSimulationTxt(int sizeProcess, int sizeOperations, struct Matrix *mat
     inicializarLista(&listProcess, sizeProcess);
 
     int sizeActualProcess = rand()%sizeProcess; // cantidad de procesos que se van a hacer al inicio
-    int sizePTR = 0; // cantidad de punteros
+    int sizePTR = 1; // cantidad de punteros
     if(sizeActualProcess == 0){
         sizeActualProcess = sizeProcess/2;
     }
