@@ -104,10 +104,7 @@ void appendElementPagina(struct Matrix *matrix, int ptr, int ram,int dicRam , in
     matrix->data[matrix->size][1] = ptr;
     matrix->data[matrix->size][2] = ram;
     matrix->data[matrix->size][3] = dicRam;
-    if(matrix->size != 0)
-        matrix->data[matrix->size][4] = matrix->data[matrix->size-1][4]+1;
-    else
-        matrix->data[matrix->size][4] = 0;
+    matrix->data[matrix->size][4] = timeStamp;
     matrix->data[matrix->size][5] = bit;
     matrix->size++;
     matrix->amount++;
@@ -208,6 +205,7 @@ void replacePageOPT(struct Matrix *matrix, struct RAM *ram, struct Virtual *virt
             posVirtual = obtenerIndiceVirtual(virtual, paginaARam);
             matrix->data[i][2] = 0;
             matrix->data[i][3] = posVirtual;
+            matrix->data[i][4] = 0;
             terminar++;
         }
         if(matrix->data[i][0] == paginaARam){
@@ -296,7 +294,7 @@ struct Matrix deleteElementProcessPtr(struct Matrix *matrix, struct Lista *lista
 }
 
 // Funcion para eliminar page con el punetro que coincida
-struct Matrix deleteElementPage(struct Matrix *matrix, struct RAM *ram, int ptr){
+struct Matrix deleteElementPage(struct Matrix *matrix, struct RAM *ram, struct Virtual *virtual, int ptr, int MRU){
     if (matrix == NULL || matrix->size == 0) {
         // Manejo de error: matriz nula o tamaño igual a cero
         printf("Error: valor de size:%d\n", matrix->size);
@@ -308,16 +306,27 @@ struct Matrix deleteElementPage(struct Matrix *matrix, struct RAM *ram, int ptr)
     matrixAux.amount = matrix->amount;
     matrixAux.size = matrix->size;
     int position = 0;
+    int timeMRU = 0;
+    int posMRU = 0;
     for(int i = 0; i < matrix->size; i++){
         if(matrix->data[i][1] != ptr){
+            if(MRU == 3){
+                if(matrix->data[i][2] == 1 && matrix->data[i][4] > timeMRU){
+                    timeMRU = matrix->data[i][4];
+                    posMRU = i;
+                }
+            }
             appendElementPaginaM(&matrixAux, position, matrix->data[i][0], matrix->data[i][1], matrix->data[i][2], matrix->data[i][3], matrix->data[i][4], matrix->data[i][5]);
             position++;
         }else{
             if(matrix->data[i][2] == 1){
                 eliminarElementoRAM(ram, matrix->data[i][3]);
+            }else{
+                eliminarElementoVirtual(virtual, matrix->data[i][3]);
             }
         }
     }
+    if(MRU == 3) matrix->data[posMRU][5] = 1;
     matrixAux.size = position;
     return matrixAux;
 }
