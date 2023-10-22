@@ -30,6 +30,9 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="label" translatable="yes">Semilla Random</property>
+                <attributes>
+                  <attribute name="foreground" value="#000000000000"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -53,6 +56,9 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="label" translatable="yes">Num. Procesos</property>
+                <attributes>
+                  <attribute name="foreground" value="#000000000000"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -77,6 +83,9 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="label" translatable="yes">Cant. Operaciones</property>
+                <attributes>
+                  <attribute name="foreground" value="#000000000000"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -113,6 +122,9 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="label" translatable="yes">Algoritmo a Simular</property>
+                <attributes>
+                  <attribute name="foreground" value="#000000000000"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -132,6 +144,9 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="label" translatable="yes">FIFO</property>
+                    <attributes>
+                      <attribute name="foreground" value="#000000000000"/>
+                    </attributes>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -143,6 +158,9 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="label" translatable="yes">SC</property>
+                    <attributes>
+                      <attribute name="foreground" value="#000000000000"/>
+                    </attributes>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -154,6 +172,9 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="label" translatable="yes">MRU</property>
+                    <attributes>
+                      <attribute name="foreground" value="#000000000000"/>
+                    </attributes>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -165,6 +186,9 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="label" translatable="yes">RND</property>
+                    <attributes>
+                      <attribute name="foreground" value="#000000000000"/>
+                    </attributes>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -260,6 +284,9 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="label" translatable="yes">No se ha cargado ningún archivo</property>
+                <attributes>
+                  <attribute name="foreground" value="#000000000000"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -300,6 +327,7 @@
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkBox" id="ram_section">
+            <property name="name">seccion</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="orientation">vertical</property>
@@ -314,6 +342,9 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="label" translatable="yes">RAM - OPT</property>
+                    <attributes>
+                      <attribute name="foreground" value="#000000000000"/>
+                    </attributes>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -398,6 +429,9 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="label" translatable="yes">RAM - [ALG]</property>
+                    <attributes>
+                      <attribute name="foreground" value="#000000000000"/>
+                    </attributes>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -455,6 +489,9 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="label" translatable="yes">MMU - OPT</property>
+                    <attributes>
+                      <attribute name="foreground" value="#000000000000"/>
+                    </attributes>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -467,6 +504,8 @@
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="shadow-type">in</property>
+                    <property name="propagate-natural-width">True</property>
+                    <property name="propagate-natural-height">True</property>
                     <child>
                       <object class="GtkViewport">
                         <property name="visible">True</property>
@@ -474,10 +513,9 @@
                         <child>
                           <!-- n-columns=8 n-rows=3 -->
                           <object class="GtkGrid" id="opt_table">
+                            <property name="name">seccion</property>
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="row-spacing">2</property>
-                            <property name="column-spacing">2</property>
                             <property name="row-homogeneous">True</property>
                             <property name="column-homogeneous">True</property>
                             <child>
@@ -485,6 +523,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">PAGE ID</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
@@ -496,6 +537,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">PID</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">1</property>
@@ -507,6 +551,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">LOADED</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">2</property>
@@ -518,6 +565,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">L-ADDR</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">3</property>
@@ -529,6 +579,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">M-ADDR</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">4</property>
@@ -540,6 +593,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">D-ADDR</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">5</property>
@@ -551,6 +607,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">LOADED-T</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">6</property>
@@ -562,6 +621,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">MARK</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">7</property>
@@ -644,6 +706,9 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="label" translatable="yes">MMU - [ALG]</property>
+                    <attributes>
+                      <attribute name="foreground" value="#000000000000"/>
+                    </attributes>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -656,6 +721,8 @@
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="shadow-type">in</property>
+                    <property name="propagate-natural-width">True</property>
+                    <property name="propagate-natural-height">True</property>
                     <child>
                       <object class="GtkViewport">
                         <property name="visible">True</property>
@@ -663,10 +730,9 @@
                         <child>
                           <!-- n-columns=8 n-rows=3 -->
                           <object class="GtkGrid" id="alg_table">
+                            <property name="name">seccion</property>
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="row-spacing">2</property>
-                            <property name="column-spacing">2</property>
                             <property name="row-homogeneous">True</property>
                             <property name="column-homogeneous">True</property>
                             <child>
@@ -674,6 +740,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">PAGE ID</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
@@ -685,6 +754,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">PID</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">1</property>
@@ -696,6 +768,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">LOADED</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">2</property>
@@ -707,6 +782,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">L-ADDR</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">3</property>
@@ -718,6 +796,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">M-ADDR</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">4</property>
@@ -729,6 +810,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">D-ADDR</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">5</property>
@@ -740,6 +824,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">LOADED-T</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">6</property>
@@ -751,6 +838,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">MARK</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">7</property>
@@ -840,6 +930,8 @@
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="shadow-type">in</property>
+                <property name="propagate-natural-width">True</property>
+                <property name="propagate-natural-height">True</property>
                 <child>
                   <object class="GtkViewport">
                     <property name="visible">True</property>
@@ -861,6 +953,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">PROCESS</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
@@ -872,6 +967,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">SIM-TIME</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">1</property>
@@ -918,6 +1016,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">RAM KB</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
@@ -929,6 +1030,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">RAM %</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">1</property>
@@ -940,6 +1044,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">V - RAM KB</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">2</property>
@@ -951,6 +1058,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">V - RAM %</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">3</property>
@@ -1023,6 +1133,9 @@
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
                                     <property name="label" translatable="yes">PAGES</property>
+                                    <attributes>
+                                      <attribute name="foreground" value="#000000000000"/>
+                                    </attributes>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1042,6 +1155,9 @@
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">LOADED</property>
+                                        <attributes>
+                                          <attribute name="foreground" value="#000000000000"/>
+                                        </attributes>
                                       </object>
                                       <packing>
                                         <property name="left-attach">0</property>
@@ -1053,6 +1169,9 @@
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">UNLOADED</property>
+                                        <attributes>
+                                          <attribute name="foreground" value="#000000000000"/>
+                                        </attributes>
                                       </object>
                                       <packing>
                                         <property name="left-attach">1</property>
@@ -1108,9 +1227,13 @@
                                     <property name="homogeneous">True</property>
                                     <child>
                                       <object class="GtkLabel">
+                                        <property name="name">rojo</property>
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">Thrashing</property>
+                                        <attributes>
+                                          <attribute name="foreground" value="#000000000000"/>
+                                        </attributes>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -1125,6 +1248,7 @@
                                         <property name="homogeneous">True</property>
                                         <child>
                                           <object class="GtkLabel">
+                                            <property name="name">rojo</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="label" translatable="yes">label</property>
@@ -1137,6 +1261,7 @@
                                         </child>
                                         <child>
                                           <object class="GtkLabel">
+                                            <property name="name">rojo</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="label" translatable="yes">label</property>
@@ -1172,6 +1297,9 @@
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">Fragmentación</property>
+                                        <attributes>
+                                          <attribute name="foreground" value="#000000000000"/>
+                                        </attributes>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -1212,15 +1340,6 @@
                             <property name="position">2</property>
                           </packing>
                         </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
                       </object>
                     </child>
                   </object>
@@ -1237,6 +1356,8 @@
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="shadow-type">in</property>
+                <property name="propagate-natural-width">True</property>
+                <property name="propagate-natural-height">True</property>
                 <child>
                   <object class="GtkViewport">
                     <property name="visible">True</property>
@@ -1258,6 +1379,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">PROCESS</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
@@ -1269,6 +1393,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">SIM-TIME</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">1</property>
@@ -1315,6 +1442,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">RAM KB</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
@@ -1326,6 +1456,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">RAM %</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">1</property>
@@ -1337,6 +1470,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">V - RAM KB</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">2</property>
@@ -1348,6 +1484,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">V - RAM %</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">3</property>
@@ -1420,6 +1559,9 @@
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
                                     <property name="label" translatable="yes">PAGES</property>
+                                    <attributes>
+                                      <attribute name="foreground" value="#000000000000"/>
+                                    </attributes>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1439,6 +1581,9 @@
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">LOADED</property>
+                                        <attributes>
+                                          <attribute name="foreground" value="#000000000000"/>
+                                        </attributes>
                                       </object>
                                       <packing>
                                         <property name="left-attach">0</property>
@@ -1450,6 +1595,9 @@
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">UNLOADED</property>
+                                        <attributes>
+                                          <attribute name="foreground" value="#000000000000"/>
+                                        </attributes>
                                       </object>
                                       <packing>
                                         <property name="left-attach">1</property>
@@ -1505,9 +1653,13 @@
                                     <property name="homogeneous">True</property>
                                     <child>
                                       <object class="GtkLabel">
+                                        <property name="name">rojo</property>
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">Thrashing</property>
+                                        <attributes>
+                                          <attribute name="foreground" value="#000000000000"/>
+                                        </attributes>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -1569,6 +1721,9 @@
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">Fragmentación</property>
+                                        <attributes>
+                                          <attribute name="foreground" value="#000000000000"/>
+                                        </attributes>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>

@@ -35,7 +35,14 @@ int algoritmoSeleccionado;
 int semilla;
 
 //widgets de la simulacion
+GtkWidget* windowSimulacion;
 
+GtkWidget* pausarSimulacionButton;
+GtkWidget* optRam;
+GtkWidget* algRam;
+
+GtkGrid* optTable;
+GtkGrid* algTable;
 
 //css de toda la vida
 static void load_css(void){
@@ -131,7 +138,7 @@ void selectAlgorithm(GtkWidget *widget, gpointer data) {
 }
 
 void init_simulacion(){
-    // Se crea una structura que guarda los datos de la simulacion
+    /*// Se crea una structura que guarda los datos de la simulacion
     struct start preparacion = crearPreparación(semilla, algoritmoSeleccionado, NULL, numProcesos, numOperaciones);
     printf("Se ha creado el archivo de simulacion semilla: %d, option: %d, numero de proceso: %d, numero de Operaciones: %d\n", preparacion.seed, preparacion.option, preparacion.NumberProcess, preparacion.amoutOperations);
     srand(preparacion.seed); // Semilla para generar numeros aleatorios
@@ -142,7 +149,11 @@ void init_simulacion(){
         printf("Error al abrir el archivo");
         return;
     }
-    freeMatrix(&mat); // Se libera la memoria de la matriz
+    freeMatrix(&mat); // Se libera la memoria de la matriz*/
+
+
+    //se activa la ventana de simulacion
+    gtk_widget_show(windowSimulacion);
 }
 
 int main(int argc, char *argv[]){
@@ -156,6 +167,8 @@ int main(int argc, char *argv[]){
     load_css();
     //ventana
     windowMenu = GTK_WIDGET(gtk_builder_get_object(builder, "window_menu")); //load window named MyWindow
+    gtk_window_set_default_size(GTK_WINDOW(windowMenu), 800, 300);
+    windowSimulacion = GTK_WIDGET(gtk_builder_get_object(builder, "window_simulacion")); //load window named MyWindow
     gtk_window_set_default_size(GTK_WINDOW(windowMenu), 800, 500);
 
     //entry
