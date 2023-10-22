@@ -2,11 +2,13 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
+#include <glib.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "util.h"
 #include "matriz.h"
+#include "mmu.h"
 
 //Widgets del menu
 GtkWidget* windowMenu;
@@ -38,11 +40,145 @@ int semilla;
 GtkWidget* windowSimulacion;
 
 GtkWidget* pausarSimulacionButton;
+
 GtkWidget* optRam;
 GtkWidget* algRam;
 
 GtkGrid* optTable;
 GtkGrid* algTable;
+
+GtkWidget* timeOPT;
+GtkWidget* timeALG;
+
+
+//Back
+
+int prueba5(){
+    FILE *archivo;
+    regex_t regexNew, regexUse, regexDelete, regexKill;
+    char *nombreArchivo = "simulation.txt";
+    archivo = fopen(nombreArchivo, "r");
+
+    if(archivo == NULL){
+        printf("Error al abrir el archivo");
+        return 1;
+    }
+
+    int status;
+    status = regcomp(&regexNew, "new\\([[:digit:]]+,[[:digit:]]+\\)", REG_EXTENDED);
+    if (status != 0) {
+        // Manejar errores de compilación de la expresión regular
+        return 1;
+    }
+
+    status = regcomp(&regexUse, "use\\([[:digit:]]+\\)", REG_EXTENDED);
+    if (status != 0) {
+        // Manejar errores de compilación de la expresión regular
+        return 1;
+    }
+
+    status = regcomp(&regexDelete, "delete\\([[:digit:]]+\\)", REG_EXTENDED);
+    if (status != 0) {
+        // Manejar errores de compilación de la expresión regular
+        return 1;
+    }
+
+    status = regcomp(&regexKill, "kill\\([[:digit:]]+\\)", REG_EXTENDED);
+    if (status != 0) {
+        // Manejar errores de compilación de la expresión regular
+        return 1;
+    }
+
+    char linea[100];
+    printf("Se encontraron las siguientes operaciones:\n");
+    inicializarRAM(&RamOPT, 50);
+    inicializarRAM(&RamAlg, 50);
+    int numeroProcesos = 10;
+    inicializarLista(&listaProcesos, numeroProcesos); // Inicializar lista de procesos
+    tablaPunteros = createMatrix(numeroProcesos, 3); // crear tabla de punteros
+    tablaPaginasOPT = createMatrix(5, 6); //crear tabla de paginas OPT
+    tablaPaginasAlg = createMatrix(5, 6); //crear tabla de paginas demas algoritmos
+    inicializarVirtual(&HDD1, 4); // Memoria virtual para el OPT
+    inicializarVirtual(&HDD2, 4); // Memoria virtual para los demas algoritmos
+    inicializarLista(&futuroOPT, 10); // lista a futuro de procesos
+    
+    while(fgets(linea, sizeof(linea),archivo) != NULL){
+        status = regexec(&regexUse, linea, 0, NULL, 0);
+        if (status == 0) {
+            int ptr = 0;
+            obtenerNumeroOper(&ptr, linea);
+            agregarElemento(&futuroOPT, ptr);
+        }
+
+    }
+    // imprimirLista(&futuroOPT);
+    fclose(archivo);
+
+    archivo = fopen(nombreArchivo, "r");
+    while(fgets(linea, sizeof(linea),archivo) != NULL){
+        status = regexec(&regexNew, linea, 0, NULL, 0);
+        if (status == 0) {
+            printf("%s", linea); // se hace operacion
+            operacionNew(linea);
+        }
+
+        status = regexec(&regexUse, linea, 0, NULL, 0);
+        if (status == 0) {
+            printf("%s", linea); // se hace operacion
+            operacionUse(linea); 
+        }
+
+        status = regexec(&regexDelete, linea, 0, NULL, 0);
+        if (status == 0) {
+            printf("%s", linea); // se hace operacion
+            operacionDelete(linea); 
+        }
+
+        status = regexec(&regexKill, linea, 0, NULL, 0);
+        if (status == 0) {
+            printf("%s", linea); // se hace operacion
+            operacionKill(linea); 
+        }
+        // printf("Lista de procesosos a Futuro :");
+        // imprimirLista(&futuroOPT);
+        // imprimirRAMPaginas(&RamOPT);
+        // imprimirVirtual(&HDD1);
+        // printf("Ram de los algoritmos\n");
+        // imprimirRAMPaginas(&RamAlg);
+        // imprimirVirtual(&HDD2);
+        
+        // imprimirLista(&listaProcesos);
+        // printMatrix(&tablaPaginasOPT);
+        sleep(1);
+        char timeAlgText[20];
+        sprintf(timeAlgText, "%d", tiempoAlg);
+        gtk_label_set_text(GTK_LABEL(timeALG), timeAlgText);
+        gtk_widget_show(windowSimulacion);
+
+    }
+    printf("Tiempo opt: %d\n", tiempoOPT);
+    printf("Tiempo alg: %d\n", tiempoAlg);
+    printf("Trashing opt: %d\n", trashingOpt);
+    printf("Trashing alg: %d\n", trashingAlg);
+    //liberar memoria
+    regfree(&regexDelete);
+    regfree(&regexKill);
+    regfree(&regexUse);
+    regfree(&regexNew);
+    fclose(archivo);
+    return 0;
+}
+
+gboolean runSimulationInBackground(gpointer data) {
+    prueba5();
+    return G_SOURCE_REMOVE; // Indicar que el hilo ha terminado y puede ser removido
+}
+
+void iniciarSimulacionEnHilo() {
+    // Crear un hilo en segundo plano para ejecutar la simulación
+    GThread* thread = g_thread_new("SimulacionThread", runSimulationInBackground, NULL);
+    g_thread_unref(thread); // Liberar la referencia al hilo para que se autodestruya cuando termine
+}
 
 //css de toda la vida
 static void load_css(void){
@@ -138,7 +274,7 @@ void selectAlgorithm(GtkWidget *widget, gpointer data) {
 }
 
 void init_simulacion(){
-    /*// Se crea una structura que guarda los datos de la simulacion
+    // Se crea una structura que guarda los datos de la simulacion
     struct start preparacion = crearPreparación(semilla, algoritmoSeleccionado, NULL, numProcesos, numOperaciones);
     printf("Se ha creado el archivo de simulacion semilla: %d, option: %d, numero de proceso: %d, numero de Operaciones: %d\n", preparacion.seed, preparacion.option, preparacion.NumberProcess, preparacion.amoutOperations);
     srand(preparacion.seed); // Semilla para generar numeros aleatorios
@@ -149,11 +285,16 @@ void init_simulacion(){
         printf("Error al abrir el archivo");
         return;
     }
-    freeMatrix(&mat); // Se libera la memoria de la matriz*/
+    freeMatrix(&mat); // Se libera la memoria de la matriz
 
-
+    
     //se activa la ventana de simulacion
     gtk_widget_show(windowSimulacion);
+    simulacion();
+}
+
+void simulacion(){
+    iniciarSimulacionEnHilo();
 }
 
 int main(int argc, char *argv[]){
@@ -173,6 +314,11 @@ int main(int argc, char *argv[]){
 
     //entry
     semillaEntry = GTK_WIDGET(gtk_builder_get_object(builder, "semilla_entry")); 
+
+    //label
+    timeOPT = GTK_WIDGET(gtk_builder_get_object(builder, "time_opt")); 
+    timeALG = GTK_WIDGET(gtk_builder_get_object(builder, "time_alg")); 
+
     //botones
     processSpinButton = GTK_WIDGET(gtk_builder_get_object(builder, "num_Proceso")); 
 	operationSpinButton = GTK_WIDGET(gtk_builder_get_object(builder, "num_operaciones"));
@@ -214,6 +360,7 @@ int main(int argc, char *argv[]){
     g_signal_connect(windowMenu, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
     gtk_widget_show_all(windowMenu); //show window
+    gtk_widget_show_all(windowSimulacion); 
     gtk_main(); //run
 
     return 0;
