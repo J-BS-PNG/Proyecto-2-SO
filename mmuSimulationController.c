@@ -2,7 +2,7 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
-#include <glib.h>
+#include <glib.h> //pal hilo que gtk tiene jjiijjiij
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -50,9 +50,16 @@ GtkGrid* algTable;
 GtkWidget* timeOPT;
 GtkWidget* timeALG;
 
+void estadisticas(){
+    char timeAlgText[20];
+    sprintf(timeAlgText, "%d", tiempoAlg);
+    gtk_label_set_text(GTK_LABEL(timeALG), timeAlgText);
+    
+    
+    gtk_widget_show(windowSimulacion);
+}
 
 //Back
-
 int prueba5(){
     FILE *archivo;
     regex_t regexNew, regexUse, regexDelete, regexKill;
@@ -150,10 +157,7 @@ int prueba5(){
         // imprimirLista(&listaProcesos);
         // printMatrix(&tablaPaginasOPT);
         sleep(1);
-        char timeAlgText[20];
-        sprintf(timeAlgText, "%d", tiempoAlg);
-        gtk_label_set_text(GTK_LABEL(timeALG), timeAlgText);
-        gtk_widget_show(windowSimulacion);
+        estadisticas();
 
     }
     printf("Tiempo opt: %d\n", tiempoOPT);
@@ -272,6 +276,9 @@ void selectAlgorithm(GtkWidget *widget, gpointer data) {
 
     g_print("Algoritmo seleccionado: %d\n", algoritmoSeleccionado);
 }
+void simulacion(){
+    iniciarSimulacionEnHilo();
+}
 
 void init_simulacion(){
     // Se crea una structura que guarda los datos de la simulacion
@@ -293,10 +300,6 @@ void init_simulacion(){
     simulacion();
 }
 
-void simulacion(){
-    iniciarSimulacionEnHilo();
-}
-
 int main(int argc, char *argv[]){
     GtkBuilder *builder; //GTK builder
     gtk_init(&argc, &argv); //start gtk
@@ -308,10 +311,7 @@ int main(int argc, char *argv[]){
     load_css();
     //ventana
     windowMenu = GTK_WIDGET(gtk_builder_get_object(builder, "window_menu")); //load window named MyWindow
-    gtk_window_set_default_size(GTK_WINDOW(windowMenu), 800, 300);
     windowSimulacion = GTK_WIDGET(gtk_builder_get_object(builder, "window_simulacion")); //load window named MyWindow
-    gtk_window_set_default_size(GTK_WINDOW(windowMenu), 800, 500);
-
     //entry
     semillaEntry = GTK_WIDGET(gtk_builder_get_object(builder, "semilla_entry")); 
 
@@ -360,7 +360,7 @@ int main(int argc, char *argv[]){
     g_signal_connect(windowMenu, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
     gtk_widget_show_all(windowMenu); //show window
-    gtk_widget_show_all(windowSimulacion); 
+    //gtk_widget_show_all(windowSimulacion); 
     gtk_main(); //run
 
     return 0;
