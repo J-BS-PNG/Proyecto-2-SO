@@ -110,7 +110,6 @@ void estadisticasAlg(){
     gtk_label_set_text(GTK_LABEL(tarshIALG), trashIAlgText);
     
     
-    gtk_widget_show(windowSimulacion);
 }
 
 void estadisticasOpt(){
@@ -147,9 +146,69 @@ void estadisticasOpt(){
     gtk_label_set_text(GTK_LABEL(unloadedOPT), unloadedOptText);
     gtk_label_set_text(GTK_LABEL(tarshIOPT), trashIOptText);
     
-    
-    gtk_widget_show(windowSimulacion);
 
+}
+
+void cleanTable3(){ //limpia la tabla del display de la respuesta final
+    printf("Clean table %d\n", tablaPaginasOPT.size);
+	for (int i = 0; i < tablaPaginasOPT.size; i++) {
+        
+		gtk_grid_remove_row(optTable, 0);
+    }
+}
+
+
+
+void createTableOpt(){
+
+
+    printf("create table %d\n", tablaPaginasOPT.size);
+
+
+    for(int i = 0; i < tablaPaginasOPT.size; i++){
+
+        //Columna Page ID
+        GtkWidget *labelPageID = gtk_label_new(g_strdup_printf("%d", i+1));
+        gtk_widget_set_name(labelPageID, "neutro");
+        gtk_grid_attach(GTK_GRID(optTable), labelPageID, 0, i, 1, 1);
+
+        //Columna PID
+        GtkWidget *labelPID = gtk_label_new(g_strdup_printf("%d", i+1));
+        gtk_widget_set_name(labelPID, "neutro");
+        gtk_grid_attach(GTK_GRID(optTable), labelPID, 1, i, 1, 1);
+
+        //Columna Loaded
+        GtkWidget *labelLoaded = gtk_label_new(g_strdup_printf("%d", i+1));
+        gtk_widget_set_name(labelLoaded, "neutro");
+        gtk_grid_attach(GTK_GRID(optTable), labelLoaded, 2, i, 1, 1);
+
+        //Columna L-ADDR
+        GtkWidget *labelL_ADDR = gtk_label_new(g_strdup_printf("%d", i+1));
+        gtk_widget_set_name(labelL_ADDR, "neutro");
+        gtk_grid_attach(GTK_GRID(optTable), labelL_ADDR, 3, i, 1, 1);
+
+        //Columna M-ADDR
+        GtkWidget *labelM_ADDR = gtk_label_new(g_strdup_printf("%d", i+1));
+        gtk_widget_set_name(labelM_ADDR, "neutro");
+        gtk_grid_attach(GTK_GRID(optTable), labelM_ADDR, 4, i, 1, 1);
+
+        //Columna D-ADDR
+        GtkWidget *labelD_ADDR = gtk_label_new(g_strdup_printf("%d", i+1));
+        gtk_widget_set_name(labelD_ADDR, "neutro");
+        gtk_grid_attach(GTK_GRID(optTable), labelD_ADDR, 5, i, 1, 1);
+
+        //Columna LOADED-T
+        GtkWidget *labelLoaded_T = gtk_label_new(g_strdup_printf("%d", i+1));
+        gtk_widget_set_name(labelLoaded_T, "neutro");
+        gtk_grid_attach(GTK_GRID(optTable), labelLoaded_T, 6, i, 1, 1);
+
+        //Columna MARK
+        GtkWidget *labelMark = gtk_label_new(g_strdup_printf("%d", i+1));
+        gtk_widget_set_name(labelMark, "neutro");
+        gtk_grid_attach(GTK_GRID(optTable), labelMark, 7, i, 1, 1);
+
+    }
+    gtk_widget_show_all(windowSimulacion); 
 }
 
 //Back
@@ -216,6 +275,7 @@ int prueba5(){
 
     archivo = fopen(nombreArchivo, "r");
     while(fgets(linea, sizeof(linea),archivo) != NULL){
+        
         procesos = listaProcesos.longitud; // cantidad de procesos
         
         ramKBOPT = (RamAlg.capacidad - RamOPT.cantidadDatos)*4; // cantidad de KB en la RAM OPT
@@ -255,19 +315,12 @@ int prueba5(){
             printf("%s", linea); // se hace operacion
             operacionKill(linea); 
         }
-        // printf("Lista de procesosos a Futuro :");
-        // imprimirLista(&futuroOPT);
-        // imprimirRAMPaginas(&RamOPT);
-        // imprimirVirtual(&HDD1);
-        // printf("Ram de los algoritmos\n");
-        // imprimirRAMPaginas(&RamAlg);
-        // imprimirVirtual(&HDD2);
-        
-        // imprimirLista(&listaProcesos);
-        // printMatrix(&tablaPaginasOPT);
-        sleep(1);
+
+        sleep(2);
         estadisticasAlg();
         estadisticasOpt();
+        createTableOpt();
+        gtk_widget_show_all(windowSimulacion); 
 
     }
     printf("Tiempo opt: %d\n", tiempoOPT);
@@ -466,6 +519,9 @@ int main(int argc, char *argv[]){
     
     //GRIDS
     selectAlgorithmTable = GTK_GRID(gtk_builder_get_object(builder, "select_algorithm"));
+    optTable = GTK_GRID(gtk_builder_get_object(builder, "opt_table"));
+
+    algTable = GTK_GRID(gtk_builder_get_object(builder, "alg_table"));
 
 
     //ASIGN VARIABLES
