@@ -344,8 +344,31 @@ int main(int argc, char *argv[]){
     semillaEntry = GTK_WIDGET(gtk_builder_get_object(builder, "semilla_entry")); 
 
     //label
+    //estadisticas opt
+    processOPT = GTK_WIDGET(gtk_builder_get_object(builder, "cant_processes_opt")); 
     timeOPT = GTK_WIDGET(gtk_builder_get_object(builder, "time_opt")); 
+    ramKbOPT = GTK_WIDGET(gtk_builder_get_object(builder, "ram_kb_opt")); 
+    ramPOPT = GTK_WIDGET(gtk_builder_get_object(builder, "ram_p_opt")); 
+    VRamOPT = GTK_WIDGET(gtk_builder_get_object(builder, "ram_v_opt")); 
+    vRamPOPT = GTK_WIDGET(gtk_builder_get_object(builder, "ram_p_v_opt")); 
+    loadedOPT = GTK_WIDGET(gtk_builder_get_object(builder, "loaded_opt")); 
+    unloadedOPT = GTK_WIDGET(gtk_builder_get_object(builder, "unloaded_opt")); 
+    tarshIOPT = GTK_WIDGET(gtk_builder_get_object(builder, "trash_izq_opt")); 
+    trashDOPT = GTK_WIDGET(gtk_builder_get_object(builder, "trash_der_opt")); 
+    fragOPT = GTK_WIDGET(gtk_builder_get_object(builder, "frag_opt")); 
+
+    //estadostocas alg
+    processALG = GTK_WIDGET(gtk_builder_get_object(builder, "cant_processes_alg")); 
     timeALG = GTK_WIDGET(gtk_builder_get_object(builder, "time_alg")); 
+    ramKbALG = GTK_WIDGET(gtk_builder_get_object(builder, "ram_kb_alg")); 
+    ramPALG = GTK_WIDGET(gtk_builder_get_object(builder, "ram_p_alg")); 
+    VRamALG = GTK_WIDGET(gtk_builder_get_object(builder, "ram_v_alg")); 
+    vRamPALG = GTK_WIDGET(gtk_builder_get_object(builder, "ram_p_v_alg")); 
+    loadedALG = GTK_WIDGET(gtk_builder_get_object(builder, "loaded_alg")); 
+    unloadedALG = GTK_WIDGET(gtk_builder_get_object(builder, "unloaded_alg")); 
+    tarshIALG = GTK_WIDGET(gtk_builder_get_object(builder, "trash_izq_alg")); 
+    trashDALG = GTK_WIDGET(gtk_builder_get_object(builder, "trash_der_alg")); 
+    fragALG = GTK_WIDGET(gtk_builder_get_object(builder, "frag_alg")); 
 
     //botones
     processSpinButton = GTK_WIDGET(gtk_builder_get_object(builder, "num_Proceso")); 
