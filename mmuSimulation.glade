@@ -3355,6 +3355,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">label</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
@@ -3366,6 +3369,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">label</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">1</property>
@@ -3446,6 +3452,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">label</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
@@ -3457,6 +3466,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">label</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">1</property>
@@ -3468,6 +3480,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">label</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">2</property>
@@ -3479,6 +3494,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">label</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">3</property>
@@ -3557,6 +3575,9 @@
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">label</property>
+                                        <attributes>
+                                          <attribute name="foreground" value="#000000000000"/>
+                                        </attributes>
                                       </object>
                                       <packing>
                                         <property name="left-attach">0</property>
@@ -3568,6 +3589,9 @@
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">label</property>
+                                        <attributes>
+                                          <attribute name="foreground" value="#000000000000"/>
+                                        </attributes>
                                       </object>
                                       <packing>
                                         <property name="left-attach">1</property>
@@ -3621,11 +3645,14 @@
                                         <property name="can-focus">False</property>
                                         <property name="homogeneous">True</property>
                                         <child>
-                                          <object class="GtkLabel">
+                                          <object class="GtkLabel" id="trash_izq_opt">
                                             <property name="name">rojo</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="label" translatable="yes">label</property>
+                                            <attributes>
+                                              <attribute name="foreground" value="#000000000000"/>
+                                            </attributes>
                                           </object>
                                           <packing>
                                             <property name="expand">False</property>
@@ -3634,11 +3661,14 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkLabel">
+                                          <object class="GtkLabel" id="trash_der_opt">
                                             <property name="name">rojo</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="label" translatable="yes">label</property>
+                                            <attributes>
+                                              <attribute name="foreground" value="#000000000000"/>
+                                            </attributes>
                                           </object>
                                           <packing>
                                             <property name="expand">False</property>
@@ -3686,6 +3716,9 @@
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">label</property>
+                                        <attributes>
+                                          <attribute name="foreground" value="#000000000000"/>
+                                        </attributes>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -3781,6 +3814,9 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">label</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
@@ -3871,10 +3907,13 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel">
+                              <object class="GtkLabel" id="ram_kb_alg">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">label</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
@@ -3882,10 +3921,13 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel">
+                              <object class="GtkLabel" id="ram_p_alg">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">label</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">1</property>
@@ -3893,10 +3935,13 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel">
+                              <object class="GtkLabel" id="ram_v_alg">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">label</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">2</property>
@@ -3904,10 +3949,13 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel">
+                              <object class="GtkLabel" id="ram_p_v_alg">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">label</property>
+                                <attributes>
+                                  <attribute name="foreground" value="#000000000000"/>
+                                </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">3</property>
@@ -3982,10 +4030,13 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="loaded_alg">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">label</property>
+                                        <attributes>
+                                          <attribute name="foreground" value="#000000000000"/>
+                                        </attributes>
                                       </object>
                                       <packing>
                                         <property name="left-attach">0</property>
@@ -3993,10 +4044,13 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="unloaded_alg">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">label</property>
+                                        <attributes>
+                                          <attribute name="foreground" value="#000000000000"/>
+                                        </attributes>
                                       </object>
                                       <packing>
                                         <property name="left-attach">1</property>
@@ -4050,11 +4104,14 @@
                                         <property name="can-focus">False</property>
                                         <property name="homogeneous">True</property>
                                         <child>
-                                          <object class="GtkLabel">
+                                          <object class="GtkLabel" id="trash_izq_alg">
                                             <property name="name">rojo</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="label" translatable="yes">label</property>
+                                            <attributes>
+                                              <attribute name="foreground" value="#000000000000"/>
+                                            </attributes>
                                           </object>
                                           <packing>
                                             <property name="expand">False</property>
@@ -4063,11 +4120,14 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkLabel">
+                                          <object class="GtkLabel" id="trash_der_alg">
                                             <property name="name">rojo</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="label" translatable="yes">label</property>
+                                            <attributes>
+                                              <attribute name="foreground" value="#000000000000"/>
+                                            </attributes>
                                           </object>
                                           <packing>
                                             <property name="expand">False</property>
@@ -4111,10 +4171,13 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="frag_alg">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">label</property>
+                                        <attributes>
+                                          <attribute name="foreground" value="#000000000000"/>
+                                        </attributes>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>

@@ -47,16 +47,44 @@ GtkWidget* algRam;
 GtkGrid* optTable;
 GtkGrid* algTable;
 
+//ESTADISTICAS OPTIMO
+GtkWidget* processOPT;
 GtkWidget* timeOPT;
-GtkWidget* timeALG;
+GtkWidget* ramKbOPT;
+GtkWidget* ramPOPT;
+GtkWidget* VRamOPT;
+GtkWidget* vRamPOPT;
+GtkWidget* loadedOPT;
+GtkWidget* unloadedOPT;
+GtkWidget* tarshIOPT;
+GtkWidget* trashDOPT;
+GtkWidget* fragOPT;
 
-void estadisticas(){
+//ESTADISTICA ALGORITMO
+GtkWidget* processALG;
+GtkWidget* timeALG;
+GtkWidget* ramKbALG;
+GtkWidget* ramPALG;
+GtkWidget* VRamALG;
+GtkWidget* vRamPALG;
+GtkWidget* loadedALG;
+GtkWidget* unloadedALG;
+GtkWidget* tarshIALG;
+GtkWidget* trashDALG;
+GtkWidget* fragALG;
+
+void estadisticasAlg(){
     char timeAlgText[20];
     sprintf(timeAlgText, "%d", tiempoAlg);
     gtk_label_set_text(GTK_LABEL(timeALG), timeAlgText);
     
     
     gtk_widget_show(windowSimulacion);
+}
+
+void estadisticasOpt(){
+
+
 }
 
 //Back

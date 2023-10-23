@@ -3621,7 +3621,7 @@
                                         <property name="can-focus">False</property>
                                         <property name="homogeneous">True</property>
                                         <child>
-                                          <object class="GtkLabel">
+                                          <object class="GtkLabel" id="trash_izq_opt">
                                             <property name="name">rojo</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
@@ -3634,7 +3634,7 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkLabel">
+                                          <object class="GtkLabel" id="trash_der_opt">
                                             <property name="name">rojo</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
@@ -3871,7 +3871,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel">
+                              <object class="GtkLabel" id="ram_kb_alg">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">label</property>
@@ -3882,7 +3882,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel">
+                              <object class="GtkLabel" id="ram_p_alg">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">label</property>
@@ -3893,7 +3893,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel">
+                              <object class="GtkLabel" id="ram_v_alg">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">label</property>
@@ -3904,7 +3904,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel">
+                              <object class="GtkLabel" id="ram_p_v_alg">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">label</property>
@@ -3982,7 +3982,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="loaded_alg">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">label</property>
@@ -3993,7 +3993,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="unloaded_alg">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">label</property>
@@ -4050,7 +4050,7 @@
                                         <property name="can-focus">False</property>
                                         <property name="homogeneous">True</property>
                                         <child>
-                                          <object class="GtkLabel">
+                                          <object class="GtkLabel" id="trash_izq_alg">
                                             <property name="name">rojo</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
@@ -4063,7 +4063,7 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkLabel">
+                                          <object class="GtkLabel" id="trash_der_alg">
                                             <property name="name">rojo</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
@@ -4111,7 +4111,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="frag_alg">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">label</property>
