@@ -74,16 +74,81 @@ GtkWidget* trashDALG;
 GtkWidget* fragALG;
 
 void estadisticasAlg(){
+    char processAlgText[20];
     char timeAlgText[20];
+    char ramKbAlgText[20];
+    char ramPAlgText[20];
+    char VRamAlgText[20];
+    char VRamPAlgText[20];
+    char loadedAlgText[20];
+    char unloadedAlgText[20];
+    char trashIAlgText[20];
+    char trashDAlgText[20];
+    char fragAlgText[20];
+
+
+    sprintf(processAlgText, "%d", procesos);
     sprintf(timeAlgText, "%d", tiempoAlg);
+    sprintf(ramKbAlgText, "%d", ramKBAlg);
+    sprintf(ramPAlgText, "%d", porcentajeAlg);
+    sprintf(VRamAlgText, "%d", virtualKBAlg);
+    sprintf(VRamPAlgText, "%d", porcentajeVirtualAlg);
+    sprintf(loadedAlgText, "%d", paginasCargadaAlg);
+    sprintf(unloadedAlgText, "%d", paginasFueraAlg);
+    sprintf(trashIAlgText, "%d", trashingAlg);
+
+    printf(processAlgText);
+
+    gtk_label_set_text(GTK_LABEL(processALG), processAlgText);
     gtk_label_set_text(GTK_LABEL(timeALG), timeAlgText);
+    gtk_label_set_text(GTK_LABEL(ramKbALG), ramKbAlgText);
+    gtk_label_set_text(GTK_LABEL(ramPALG), ramPAlgText);
+    gtk_label_set_text(GTK_LABEL(VRamALG), VRamAlgText);
+    gtk_label_set_text(GTK_LABEL(vRamPALG), VRamPAlgText);
+    gtk_label_set_text(GTK_LABEL(loadedALG), loadedAlgText);
+    gtk_label_set_text(GTK_LABEL(unloadedALG), unloadedAlgText);
+    gtk_label_set_text(GTK_LABEL(tarshIALG), trashIAlgText);
     
     
     gtk_widget_show(windowSimulacion);
 }
 
 void estadisticasOpt(){
+    char processOptText[20];
+    char timeOptText[20];
+    char ramKbOptText[20];
+    char ramPOptText[20];
+    char VRamOptText[20];
+    char VRamPOptText[20];
+    char loadedOptText[20];
+    char unloadedOptText[20];
+    char trashIOptText[20];
+    char trashDOptText[20];
+    char fragOptText[20];
 
+
+    sprintf(processOptText, "%d", procesos);
+    sprintf(timeOptText, "%d", tiempoOPT);
+    sprintf(ramKbOptText, "%d", ramKBOPT);
+    sprintf(ramPOptText, "%d", porcentajeOPT);
+    sprintf(VRamOptText, "%d", virtualKBOPT);
+    sprintf(VRamPOptText, "%d", porcentajeVirtualOPT);
+    sprintf(loadedOptText, "%d", paginasCargadaOPT);
+    sprintf(unloadedOptText, "%d", paginasFueraOPT);
+    sprintf(trashIOptText, "%d", trashingOpt);
+
+    gtk_label_set_text(GTK_LABEL(processOPT), processOptText);
+    gtk_label_set_text(GTK_LABEL(timeOPT), timeOptText);
+    gtk_label_set_text(GTK_LABEL(ramKbOPT), ramKbOptText);
+    gtk_label_set_text(GTK_LABEL(ramPOPT), ramPOptText);
+    gtk_label_set_text(GTK_LABEL(VRamOPT), VRamOptText);
+    gtk_label_set_text(GTK_LABEL(vRamPOPT), VRamPOptText);
+    gtk_label_set_text(GTK_LABEL(loadedOPT), loadedOptText);
+    gtk_label_set_text(GTK_LABEL(unloadedOPT), unloadedOptText);
+    gtk_label_set_text(GTK_LABEL(tarshIOPT), trashIOptText);
+    
+    
+    gtk_widget_show(windowSimulacion);
 
 }
 
@@ -126,8 +191,8 @@ int prueba5(){
 
     char linea[100];
     printf("Se encontraron las siguientes operaciones:\n");
-    inicializarRAM(&RamOPT, 50);
-    inicializarRAM(&RamAlg, 50);
+    inicializarRAM(&RamOPT, 20);
+    inicializarRAM(&RamAlg, 20);
     int numeroProcesos = 10;
     inicializarLista(&listaProcesos, numeroProcesos); // Inicializar lista de procesos
     tablaPunteros = createMatrix(numeroProcesos, 3); // crear tabla de punteros
@@ -151,6 +216,22 @@ int prueba5(){
 
     archivo = fopen(nombreArchivo, "r");
     while(fgets(linea, sizeof(linea),archivo) != NULL){
+        procesos = listaProcesos.longitud; // cantidad de procesos
+        
+        ramKBOPT = (RamAlg.capacidad - RamOPT.cantidadDatos)*4; // cantidad de KB en la RAM OPT
+        ramKBAlg = (RamAlg.capacidad - RamAlg.cantidadDatos)*4; // cantidad de KB en la RAM de los demas algoritmos
+        
+        porcentajeOPT = ((double)ramKBOPT/(RamOPT.capacidad*4))*100; // porcentaje de la RAM OPT
+        porcentajeAlg = ((double)ramKBAlg/(RamAlg.capacidad*4))*100; // porcentaje de la RAM de los demas algoritmos
+        
+        virtualKBOPT = HDD1.capacidad - HDD1.cantidadDatos; // cantidad de KB en la memoria virtual OPT
+        virtualKBAlg =  HDD2.capacidad - HDD2.cantidadDatos; // cantidad de KB en la memoria virtual de los demas algoritmos
+        
+        porcentajeVirtualOPT = ((double)virtualKBOPT/RamOPT.capacidad)*100; // porcentaje de la memoria virtual OPT
+        porcentajeVirtualAlg = ((double)virtualKBAlg/RamAlg.capacidad)*100; // porcentaje de la memoria virtual de los demas algoritmos
+        
+        contarPaginas();
+        
         status = regexec(&regexNew, linea, 0, NULL, 0);
         if (status == 0) {
             printf("%s", linea); // se hace operacion
@@ -185,7 +266,8 @@ int prueba5(){
         // imprimirLista(&listaProcesos);
         // printMatrix(&tablaPaginasOPT);
         sleep(1);
-        estadisticas();
+        estadisticasAlg();
+        estadisticasOpt();
 
     }
     printf("Tiempo opt: %d\n", tiempoOPT);
