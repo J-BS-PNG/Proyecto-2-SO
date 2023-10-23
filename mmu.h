@@ -24,6 +24,7 @@ struct Virtual HDD2; //memoria virtual
 
 struct Lista listaProcesos; // lista de procesos
 
+
 struct Matrix tablaPunteros; // tabla de punteros, procesos, tamaño
 
 struct Matrix tablaPaginasOPT; // tabla de pagina, puntero, esta en memeoria, Dir. memoria, timestamp, bit
@@ -31,12 +32,35 @@ struct Matrix tablaPaginasAlg; // tabla de pagina, puntero, esta en memeoria, Di
 
 struct Lista futuroOPT; // lista de procesos
 
-int algoritmoSeleccionado = 2;
+int algoritmoSeleccionado = 4;
+
+// Estadissticas  
 int tiempoOPT = 0;
 int tiempoAlg = 0;
 
 int trashingOpt = 0;
 int trashingAlg = 0;
+
+int procesos = 0;
+
+int ramKBOPT = 0;
+int porcentajeOPT = 0;
+int ramKBAlg = 0;
+int porcentajeAlg = 0;
+
+int virtualKBOPT = 0;
+int porcentajeVirtualOPT = 0;
+int virtualKBAlg = 0;
+int porcentajeVirtualAlg = 0;
+
+int paginasCargadaOPT = 0;
+int paginasFueraOPT = 0;
+
+int paginasCargadaAlg = 0;
+int paginasFueraAlg = 0;
+
+int fragmentacionInternaOPT = 0;
+int fragmentacionInternaAlg = 0;
 
 // Funcion para obtener los numeros de la operacion new
 void obtenerNumerosNew(int *numero1, int *numero2, const char *cadena){
@@ -208,6 +232,30 @@ void algoritmoMRU(int pagina, int ptr){
     replacePageOPT(&tablaPaginasAlg, &RamAlg, &HDD2, paginaCambio, pagina, numeroProceso);
 }
 
+void AlgoritmoRamdon(int pagina, int ptr, struct Lista *paginasUsadas){
+
+
+    struct Lista auxPaginas;
+    //struct Lista ordePAginas;
+    inicializarLista(&auxPaginas, 10);
+    for(int i = 0; i < RamAlg.capacidad; i++){
+        if(RamAlg.datos2[i] != -1 && obtenerIndice(paginasUsadas, RamAlg.datos2[i]) == -1){
+            agregarElemento(&auxPaginas, RamAlg.datos2[i]);
+        }
+    }
+    imprimirLista(&auxPaginas);
+    agregarElemento(paginasUsadas, pagina);
+    // se obtiene una pagina random
+    int paginaRadom = obtenerElemento(&auxPaginas, rand()%auxPaginas.longitud);
+
+    printf("Pagina a reemplazar: %d\t pagina entrada: %d\n", paginaRadom, pagina);
+    //obtiene el proceso 
+    int numeroProceso = getProcessElementPtr(&tablaPunteros, ptr);
+    replacePageOPT(&tablaPaginasAlg, &RamAlg, &HDD2, paginaRadom, pagina, numeroProceso);
+    
+    liberarLista(&auxPaginas);
+}
+
 //entradas: numero de pagina, opcion, ptr, lista de paginas usadas
 void algoritmoRemplazoUsar(int opcion, int pagina, int ptr, struct Lista *paginasUsadas){
     switch(opcion){
@@ -224,6 +272,7 @@ void algoritmoRemplazoUsar(int opcion, int pagina, int ptr, struct Lista *pagina
             //MRU
             break;
         case 4:
+            AlgoritmoRamdon(pagina, ptr, paginasUsadas);
             //RDN
             break;
     }
@@ -299,15 +348,18 @@ void operacionNew(const char *cadena){
         // printf("No hay espacio en RAM usar paginacion\n");
         // se hace algoritmo de reemplazo
         // AlgoritmoOtros();
+        struct Lista paginasUsadasAlg;
+        inicializarLista(&paginasUsadasAlg, 10);
         for(int i = 0; i < ocupa2; i++){
             int dirVirtual = agregarElementoVirtual(&HDD2, tablaPaginasAlg.amount);
             int numPagina = tablaPaginasAlg.amount;
             printf("Numero a reemplazar: %d\n", numPagina);
             appendElementPagina(&tablaPaginasAlg, ptr, 0, dirVirtual, tiempoAlg, bit);
-            algoritmoRemplazoUsar(algoritmoSeleccionado, numPagina, ptr, NULL);
+            algoritmoRemplazoUsar(algoritmoSeleccionado, numPagina, ptr, &paginasUsadasAlg);
             tiempoAlg+=5;
             trashingAlg+=5;
         }
+        liberarLista(&paginasUsadasAlg);
     }
     
     // imprimirRAM(&RamOPT);
@@ -322,6 +374,8 @@ void verificacionRam(struct Matrix *auxPaginas, int ptr, int opcion){
     int principio = 0;
     struct Lista paginasUsadas;
     inicializarLista(&paginasUsadas, 10);
+    struct Lista paginasUsadasAlg;
+    inicializarLista(&paginasUsadasAlg, 10);
     // if(opcion == 1){
     //     printf("Tabla de paginas Fuera for\n");
     //     printMatrix(&tablaPaginasAlg);
@@ -374,7 +428,7 @@ void verificacionRam(struct Matrix *auxPaginas, int ptr, int opcion){
                     }else{
                         printf("Numero a reemplazar: %d\n", auxPaginas->data[i][0]);
                         auxPaginas->data[i][4] = tiempoAlg;
-                        algoritmoRemplazoUsar(algoritmoSeleccionado, auxPaginas->data[i][0], auxPaginas->data[i][1], NULL);
+                        algoritmoRemplazoUsar(algoritmoSeleccionado, auxPaginas->data[i][0], auxPaginas->data[i][1], &paginasUsadasAlg);
                         // AlgoritmoOPT(auxPaginas->data[i][0], 1, auxPaginas->data[i][1], &paginasUsadas);
                     }
 
@@ -450,6 +504,20 @@ void operacionKill(const char *cadena){
     // imprimirRAM(&RamOPT);
     // printf("Tabla de paginas\n");
     // printMatrix(&tablaPaginasOPT);
+}
+
+void contarPaginas(){
+    paginasCargadaOPT = 0;
+    paginasFueraOPT = 0;
+    paginasCargadaAlg = 0;
+    paginasFueraAlg = 0;
+    for(int i = 0; i < tablaPaginasOPT.size; i++){
+        if(tablaPaginasOPT.data[i][2] == 1) paginasCargadaOPT++;
+        else paginasFueraOPT++;
+
+        if(tablaPaginasAlg.data[i][2] == 1) paginasCargadaAlg++;
+        else paginasFueraAlg++;
+    }
 }
 
 // int prueba5(){
