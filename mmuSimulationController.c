@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <pthread.h>
 #include "util.h"
 #include "matriz.h"
 #include "mmu.h"
@@ -149,70 +150,149 @@ void estadisticasOpt(){
 
 }
 
-void cleanTable3(){ //limpia la tabla del display de la respuesta final
-    printf("Clean table %d\n", tablaPaginasOPT.size);
-	for (int i = 0; i < tablaPaginasOPT.size; i++) {
-        
-		gtk_grid_remove_row(optTable, 0);
+// // gboolean blockCreateTableOpt = FALSE;
+// gboolean cleanTable3(gpointer data){ //limpia la tabla del display de la respuesta final
+//     // printf("Clean table %d\n", tablaPaginasOPT.size);
+// 	for (int i = 0; i < tablaPaginasOPT.size; i++) {
+// 		gtk_grid_remove_column(optTable, 0);
+//     }
+//     return G_SOURCE_REMOVE; 
+// }
+
+// Función para limpiar una tabla de GTK sin destruir widgets
+gboolean limpiarTabla(gpointer data) {
+    GList *children = gtk_container_get_children(GTK_CONTAINER(optTable));
+
+    // Recorre la lista de widgets y quita cada uno de la tabla
+    for (GList *iter = children; iter != NULL; iter = g_list_next(iter)) {
+        gtk_container_remove(GTK_CONTAINER(optTable), GTK_WIDGET(iter->data));
     }
+
+    g_list_free(children); // Libera la lista
+    return G_SOURCE_REMOVE; 
 }
 
 
 
-void createTableOpt(){
 
+gboolean createTableOpt(gpointer data){
+    // cleanTable3();
+    // g_usleep(1000000); 
 
-    printf("create table %d\n", tablaPaginasOPT.size);
-
-
+    // printf("create table %d\n", tablaPaginasOPT.size);
     for(int i = 0; i < tablaPaginasOPT.size; i++){
 
         //Columna Page ID
-        GtkWidget *labelPageID = gtk_label_new(g_strdup_printf("%d", i+1));
+        char buffer[10];
+        sprintf(buffer, "%d", tablaPaginasOPT.data[i][0]);
+        GtkWidget *labelPageID = gtk_label_new(buffer);
         gtk_widget_set_name(labelPageID, "neutro");
         gtk_grid_attach(GTK_GRID(optTable), labelPageID, 0, i, 1, 1);
 
         //Columna PID
-        GtkWidget *labelPID = gtk_label_new(g_strdup_printf("%d", i+1));
+        int procesoID = getProcessElementPtr(&tablaPunteros, tablaPaginasOPT.data[i][1]);
+        sprintf(buffer, "%d", procesoID);
+        GtkWidget *labelPID = gtk_label_new(buffer);
         gtk_widget_set_name(labelPID, "neutro");
         gtk_grid_attach(GTK_GRID(optTable), labelPID, 1, i, 1, 1);
 
         //Columna Loaded
-        GtkWidget *labelLoaded = gtk_label_new(g_strdup_printf("%d", i+1));
-        gtk_widget_set_name(labelLoaded, "neutro");
-        gtk_grid_attach(GTK_GRID(optTable), labelLoaded, 2, i, 1, 1);
+        sprintf(buffer, "%d", tablaPaginasOPT.data[i][2]);
+        if(tablaPaginasOPT.data[i][2] == 1){
+            // muestra una X si esta cargada
+            GtkWidget *labelLoaded = gtk_label_new("X");
+            gtk_widget_set_name(labelLoaded, "neutro");
+            gtk_grid_attach(GTK_GRID(optTable), labelLoaded, 2, i, 1, 1);
+            
+            //Columna L-ADDR
+            sprintf(buffer, "%d", tablaPaginasOPT.data[i][1]);
+            GtkWidget *labelL_ADDR = gtk_label_new(buffer);
+            gtk_widget_set_name(labelL_ADDR, "neutro");
+            gtk_grid_attach(GTK_GRID(optTable), labelL_ADDR, 3, i, 1, 1);
 
-        //Columna L-ADDR
-        GtkWidget *labelL_ADDR = gtk_label_new(g_strdup_printf("%d", i+1));
-        gtk_widget_set_name(labelL_ADDR, "neutro");
-        gtk_grid_attach(GTK_GRID(optTable), labelL_ADDR, 3, i, 1, 1);
+            //Columna M-ADDR
+            sprintf(buffer, "%d", tablaPaginasOPT.data[i][3]);
+            GtkWidget *labelM_ADDR = gtk_label_new(buffer);
+            gtk_widget_set_name(labelM_ADDR, "neutro");
+            gtk_grid_attach(GTK_GRID(optTable), labelM_ADDR, 4, i, 1, 1);
 
-        //Columna M-ADDR
-        GtkWidget *labelM_ADDR = gtk_label_new(g_strdup_printf("%d", i+1));
-        gtk_widget_set_name(labelM_ADDR, "neutro");
-        gtk_grid_attach(GTK_GRID(optTable), labelM_ADDR, 4, i, 1, 1);
+            //Columna D-ADDR
+            
+            GtkWidget *labelD_ADDR = gtk_label_new("");
+            gtk_widget_set_name(labelD_ADDR, "neutro");
+            gtk_grid_attach(GTK_GRID(optTable), labelD_ADDR, 5, i, 1, 1);
+            
+            //Columna LOADED-T
+            sprintf(buffer, "%d", tablaPaginasOPT.data[i][4]);
+            GtkWidget *labelLoaded_T = gtk_label_new(buffer);
+            gtk_widget_set_name(labelLoaded_T, "neutro");
+            gtk_grid_attach(GTK_GRID(optTable), labelLoaded_T, 6, i, 1, 1);
 
-        //Columna D-ADDR
-        GtkWidget *labelD_ADDR = gtk_label_new(g_strdup_printf("%d", i+1));
-        gtk_widget_set_name(labelD_ADDR, "neutro");
-        gtk_grid_attach(GTK_GRID(optTable), labelD_ADDR, 5, i, 1, 1);
+        }else{
+            // muestra una X si esta cargada
+            GtkWidget *labelLoaded = gtk_label_new("");
+            gtk_widget_set_name(labelLoaded, "neutro");
+            gtk_grid_attach(GTK_GRID(optTable), labelLoaded, 2, i, 1, 1);
+            
+            //Columna L-ADDR
+            sprintf(buffer, "%d", tablaPaginasOPT.data[i][1]);
+            GtkWidget *labelL_ADDR = gtk_label_new(buffer);
+            gtk_widget_set_name(labelL_ADDR, "neutro");
+            gtk_grid_attach(GTK_GRID(optTable), labelL_ADDR, 3, i, 1, 1);
 
-        //Columna LOADED-T
-        GtkWidget *labelLoaded_T = gtk_label_new(g_strdup_printf("%d", i+1));
-        gtk_widget_set_name(labelLoaded_T, "neutro");
-        gtk_grid_attach(GTK_GRID(optTable), labelLoaded_T, 6, i, 1, 1);
+            //Columna M-ADDR
+            GtkWidget *labelM_ADDR = gtk_label_new("");
+            gtk_widget_set_name(labelM_ADDR, "neutro");
+            gtk_grid_attach(GTK_GRID(optTable), labelM_ADDR, 4, i, 1, 1);
+
+            //Columna D-ADDR
+            sprintf(buffer, "%d", tablaPaginasOPT.data[i][3]);
+            GtkWidget *labelD_ADDR = gtk_label_new(buffer);
+            gtk_widget_set_name(labelD_ADDR, "neutro");
+            gtk_grid_attach(GTK_GRID(optTable), labelD_ADDR, 5, i, 1, 1);
+            
+            //Columna LOADED-T
+            GtkWidget *labelLoaded_T = gtk_label_new("");
+            gtk_widget_set_name(labelLoaded_T, "neutro");
+            gtk_grid_attach(GTK_GRID(optTable), labelLoaded_T, 6, i, 1, 1);
+        }
 
         //Columna MARK
-        GtkWidget *labelMark = gtk_label_new(g_strdup_printf("%d", i+1));
+        GtkWidget *labelMark = gtk_label_new("");
         gtk_widget_set_name(labelMark, "neutro");
         gtk_grid_attach(GTK_GRID(optTable), labelMark, 7, i, 1, 1);
 
     }
-    gtk_widget_show_all(windowSimulacion); 
+    // gtk_widget_show_all(optTable); 
+    return G_SOURCE_REMOVE; 
 }
 
+gboolean mi_funcion_actualizar_interfaz(gpointer data) {
+    // Actualiza la interfaz de usuario aquí
+    gtk_widget_show_all(windowSimulacion); 
+    return G_SOURCE_REMOVE;  // Indica que esta función se debe eliminar después de ejecutarse
+}
+
+void actualizarEstadisticas(){
+    procesos = listaProcesos.longitud; // cantidad de procesos
+        
+    ramKBOPT = (RamAlg.capacidad - RamOPT.cantidadDatos)*4; // cantidad de KB en la RAM OPT
+    ramKBAlg = (RamAlg.capacidad - RamAlg.cantidadDatos)*4; // cantidad de KB en la RAM de los demas algoritmos
+    
+    porcentajeOPT = ((double)ramKBOPT/(RamOPT.capacidad*4))*100; // porcentaje de la RAM OPT
+    porcentajeAlg = ((double)ramKBAlg/(RamAlg.capacidad*4))*100; // porcentaje de la RAM de los demas algoritmos
+    
+    virtualKBOPT = HDD1.capacidad - HDD1.cantidadDatos; // cantidad de KB en la memoria virtual OPT
+    virtualKBAlg =  HDD2.capacidad - HDD2.cantidadDatos; // cantidad de KB en la memoria virtual de los demas algoritmos
+    
+    porcentajeVirtualOPT = ((double)virtualKBOPT/RamOPT.capacidad)*100; // porcentaje de la memoria virtual OPT
+    porcentajeVirtualAlg = ((double)virtualKBAlg/RamAlg.capacidad)*100; // porcentaje de la memoria virtual de los demas algoritmos
+    
+    contarPaginas();
+}
 //Back
-int prueba5(){
+
+void *prueba5(void *data){
     FILE *archivo;
     regex_t regexNew, regexUse, regexDelete, regexKill;
     char *nombreArchivo = "simulation.txt";
@@ -220,32 +300,32 @@ int prueba5(){
 
     if(archivo == NULL){
         printf("Error al abrir el archivo");
-        return 1;
+        return NULL;
     }
 
     int status;
     status = regcomp(&regexNew, "new\\([[:digit:]]+,[[:digit:]]+\\)", REG_EXTENDED);
     if (status != 0) {
         // Manejar errores de compilación de la expresión regular
-        return 1;
+        return NULL;
     }
 
     status = regcomp(&regexUse, "use\\([[:digit:]]+\\)", REG_EXTENDED);
     if (status != 0) {
         // Manejar errores de compilación de la expresión regular
-        return 1;
+        return NULL;
     }
 
     status = regcomp(&regexDelete, "delete\\([[:digit:]]+\\)", REG_EXTENDED);
     if (status != 0) {
         // Manejar errores de compilación de la expresión regular
-        return 1;
+        return NULL;
     }
 
     status = regcomp(&regexKill, "kill\\([[:digit:]]+\\)", REG_EXTENDED);
     if (status != 0) {
         // Manejar errores de compilación de la expresión regular
-        return 1;
+        return NULL;
     }
 
     char linea[100];
@@ -272,57 +352,68 @@ int prueba5(){
     }
     // imprimirLista(&futuroOPT);
     fclose(archivo);
-
+    actualizarEstadisticas();
+    estadisticasAlg();
+    estadisticasOpt(); 
+    
     archivo = fopen(nombreArchivo, "r");
     while(fgets(linea, sizeof(linea),archivo) != NULL){
         
-        procesos = listaProcesos.longitud; // cantidad de procesos
-        
-        ramKBOPT = (RamAlg.capacidad - RamOPT.cantidadDatos)*4; // cantidad de KB en la RAM OPT
-        ramKBAlg = (RamAlg.capacidad - RamAlg.cantidadDatos)*4; // cantidad de KB en la RAM de los demas algoritmos
-        
-        porcentajeOPT = ((double)ramKBOPT/(RamOPT.capacidad*4))*100; // porcentaje de la RAM OPT
-        porcentajeAlg = ((double)ramKBAlg/(RamAlg.capacidad*4))*100; // porcentaje de la RAM de los demas algoritmos
-        
-        virtualKBOPT = HDD1.capacidad - HDD1.cantidadDatos; // cantidad de KB en la memoria virtual OPT
-        virtualKBAlg =  HDD2.capacidad - HDD2.cantidadDatos; // cantidad de KB en la memoria virtual de los demas algoritmos
-        
-        porcentajeVirtualOPT = ((double)virtualKBOPT/RamOPT.capacidad)*100; // porcentaje de la memoria virtual OPT
-        porcentajeVirtualAlg = ((double)virtualKBAlg/RamAlg.capacidad)*100; // porcentaje de la memoria virtual de los demas algoritmos
-        
-        contarPaginas();
-        
         status = regexec(&regexNew, linea, 0, NULL, 0);
         if (status == 0) {
+            g_idle_add(limpiarTabla, NULL);
             printf("%s", linea); // se hace operacion
             operacionNew(linea);
+            g_idle_add(createTableOpt, NULL);
+            g_idle_add(mi_funcion_actualizar_interfaz, NULL); 
+
         }
 
         status = regexec(&regexUse, linea, 0, NULL, 0);
         if (status == 0) {
+            g_idle_add(limpiarTabla, NULL);
             printf("%s", linea); // se hace operacion
-            operacionUse(linea); 
+            operacionUse(linea);
+            g_idle_add(createTableOpt, NULL);
+            g_idle_add(mi_funcion_actualizar_interfaz, NULL); 
         }
 
         status = regexec(&regexDelete, linea, 0, NULL, 0);
         if (status == 0) {
+            g_idle_add(limpiarTabla, NULL);
             printf("%s", linea); // se hace operacion
-            operacionDelete(linea); 
+            operacionDelete(linea);
+            g_idle_add(createTableOpt, NULL);
+            g_idle_add(mi_funcion_actualizar_interfaz, NULL); 
         }
 
         status = regexec(&regexKill, linea, 0, NULL, 0);
         if (status == 0) {
+            g_idle_add(limpiarTabla, NULL);
             printf("%s", linea); // se hace operacion
-            operacionKill(linea); 
+            operacionKill(linea);
+            g_idle_add(createTableOpt, NULL);
+            g_idle_add(mi_funcion_actualizar_interfaz, NULL); 
         }
 
-        sleep(2);
-        estadisticasAlg();
-        estadisticasOpt();
-        createTableOpt();
-        gtk_widget_show_all(windowSimulacion); 
+        g_usleep(1000000);
 
+        actualizarEstadisticas();
+        estadisticasAlg();
+        estadisticasOpt(); 
+        // g_idle_add(createTableOpt, NULL);
+        // imprimirRAM(&RamOPT);
+        // imprimirVirtual(&HDD1);
+        
+        g_idle_add(mi_funcion_actualizar_interfaz, NULL); 
     }
+    actualizarEstadisticas();
+    estadisticasAlg();
+    estadisticasOpt();
+    // g_idle_add(cleanTable3, NULL);
+    // g_idle_add(createTableOpt, NULL);
+    // g_usleep(3000000); 
+    g_idle_add(mi_funcion_actualizar_interfaz, NULL); 
     printf("Tiempo opt: %d\n", tiempoOPT);
     printf("Tiempo alg: %d\n", tiempoAlg);
     printf("Trashing opt: %d\n", trashingOpt);
@@ -333,18 +424,19 @@ int prueba5(){
     regfree(&regexUse);
     regfree(&regexNew);
     fclose(archivo);
-    return 0;
+    return NULL;
 }
 
-gboolean runSimulationInBackground(gpointer data) {
-    prueba5();
-    return G_SOURCE_REMOVE; // Indicar que el hilo ha terminado y puede ser removido
-}
+// gboolean runSimulationInBackground(gpointer data) {
+//     prueba5();
+//     return G_SOURCE_REMOVE; // Indicar que el hilo ha terminado y puede ser removido
+// }
 
 void iniciarSimulacionEnHilo() {
     // Crear un hilo en segundo plano para ejecutar la simulación
-    GThread* thread = g_thread_new("SimulacionThread", runSimulationInBackground, NULL);
-    g_thread_unref(thread); // Liberar la referencia al hilo para que se autodestruya cuando termine
+    // GThread* thread = g_thread_new("SimulacionThread", runSimulationInBackground, NULL);
+    // g_thread_unref(thread); // Liberar la referencia al hilo para que se autodestruya cuando termine
+    g_thread_new(NULL, prueba5, NULL);
 }
 
 //css de toda la vida
@@ -461,6 +553,137 @@ void init_simulacion(){
     //se activa la ventana de simulacion
     gtk_widget_show(windowSimulacion);
     simulacion();
+
+    // FILE *archivo;
+    // regex_t regexNew, regexUse, regexDelete, regexKill;
+    // char *nombreArchivo = "simulation.txt";
+    // archivo = fopen(nombreArchivo, "r");
+
+    // if(archivo == NULL){
+    //     printf("Error al abrir el archivo");
+    //     return;
+    // }
+
+    // int status;
+    // status = regcomp(&regexNew, "new\\([[:digit:]]+,[[:digit:]]+\\)", REG_EXTENDED);
+    // if (status != 0) {
+    //     // Manejar errores de compilación de la expresión regular
+    //     return;
+    // }
+
+    // status = regcomp(&regexUse, "use\\([[:digit:]]+\\)", REG_EXTENDED);
+    // if (status != 0) {
+    //     // Manejar errores de compilación de la expresión regular
+    //     return;
+    // }
+
+    // status = regcomp(&regexDelete, "delete\\([[:digit:]]+\\)", REG_EXTENDED);
+    // if (status != 0) {
+    //     // Manejar errores de compilación de la expresión regular
+    //     return;
+    // }
+
+    // status = regcomp(&regexKill, "kill\\([[:digit:]]+\\)", REG_EXTENDED);
+    // if (status != 0) {
+    //     // Manejar errores de compilación de la expresión regular
+    //     return;
+    // }
+
+    // char linea[100];
+    // printf("Se encontraron las siguientes operaciones:\n");
+    // inicializarRAM(&RamOPT, 20);
+    // inicializarRAM(&RamAlg, 20);
+    // int numeroProcesos = 10;
+    // inicializarLista(&listaProcesos, numeroProcesos); // Inicializar lista de procesos
+    // tablaPunteros = createMatrix(numeroProcesos, 3); // crear tabla de punteros
+    // tablaPaginasOPT = createMatrix(5, 6); //crear tabla de paginas OPT
+    // tablaPaginasAlg = createMatrix(5, 6); //crear tabla de paginas demas algoritmos
+    // inicializarVirtual(&HDD1, 4); // Memoria virtual para el OPT
+    // inicializarVirtual(&HDD2, 4); // Memoria virtual para los demas algoritmos
+    // inicializarLista(&futuroOPT, 10); // lista a futuro de procesos
+    
+    // while(fgets(linea, sizeof(linea),archivo) != NULL){
+    //     status = regexec(&regexUse, linea, 0, NULL, 0);
+    //     if (status == 0) {
+    //         int ptr = 0;
+    //         obtenerNumeroOper(&ptr, linea);
+    //         agregarElemento(&futuroOPT, ptr);
+    //     }
+
+    // }
+    // // imprimirLista(&futuroOPT);
+    // fclose(archivo);
+
+    // archivo = fopen(nombreArchivo, "r");
+    // while(fgets(linea, sizeof(linea),archivo) != NULL){
+        
+    //     procesos = listaProcesos.longitud; // cantidad de procesos
+        
+    //     ramKBOPT = (RamAlg.capacidad - RamOPT.cantidadDatos)*4; // cantidad de KB en la RAM OPT
+    //     ramKBAlg = (RamAlg.capacidad - RamAlg.cantidadDatos)*4; // cantidad de KB en la RAM de los demas algoritmos
+        
+    //     porcentajeOPT = ((double)ramKBOPT/(RamOPT.capacidad*4))*100; // porcentaje de la RAM OPT
+    //     porcentajeAlg = ((double)ramKBAlg/(RamAlg.capacidad*4))*100; // porcentaje de la RAM de los demas algoritmos
+        
+    //     virtualKBOPT = HDD1.capacidad - HDD1.cantidadDatos; // cantidad de KB en la memoria virtual OPT
+    //     virtualKBAlg =  HDD2.capacidad - HDD2.cantidadDatos; // cantidad de KB en la memoria virtual de los demas algoritmos
+        
+    //     porcentajeVirtualOPT = ((double)virtualKBOPT/RamOPT.capacidad)*100; // porcentaje de la memoria virtual OPT
+    //     porcentajeVirtualAlg = ((double)virtualKBAlg/RamAlg.capacidad)*100; // porcentaje de la memoria virtual de los demas algoritmos
+        
+    //     contarPaginas();
+        
+    //     status = regexec(&regexNew, linea, 0, NULL, 0);
+    //     if (status == 0) {
+    //         printf("%s", linea); // se hace operacion
+    //         operacionNew(linea);
+    //         createTableOpt();
+    //     }
+
+    //     status = regexec(&regexUse, linea, 0, NULL, 0);
+    //     if (status == 0) {
+    //         cleanTable3();
+    //         printf("%s", linea); // se hace operacion
+    //         operacionUse(linea);
+    //         createTableOpt(); 
+    //     }
+
+    //     status = regexec(&regexDelete, linea, 0, NULL, 0);
+    //     if (status == 0) {
+    //         cleanTable3();
+    //         printf("%s", linea); // se hace operacion
+    //         operacionDelete(linea);
+    //         createTableOpt(); 
+    //     }
+
+    //     status = regexec(&regexKill, linea, 0, NULL, 0);
+    //     if (status == 0) {
+    //         cleanTable3();
+    //         printf("%s", linea); // se hace operacion
+    //         operacionKill(linea); 
+    //         createTableOpt();
+    //         break;
+    //     }
+
+    //     sleep(2);
+    //     estadisticasAlg();
+    //     estadisticasOpt();
+    //     gtk_widget_show_all(windowSimulacion); 
+
+    // }
+    // gtk_widget_show_all(windowSimulacion); 
+
+    // printf("Tiempo opt: %d\n", tiempoOPT);
+    // printf("Tiempo alg: %d\n", tiempoAlg);
+    // printf("Trashing opt: %d\n", trashingOpt);
+    // printf("Trashing alg: %d\n", trashingAlg);
+    // //liberar memoria
+    // regfree(&regexDelete);
+    // regfree(&regexKill);
+    // regfree(&regexUse);
+    // regfree(&regexNew);
+    // fclose(archivo);
+    liberarMemoriaPrograma();
 }
 
 int main(int argc, char *argv[]){
