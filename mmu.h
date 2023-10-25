@@ -32,14 +32,16 @@ struct Matrix tablaPaginasAlg; // tabla de pagina, puntero, esta en memeoria, Di
 
 struct Lista futuroOPT; // lista de procesos
 
-int algoritmoSeleccionado = 4;
+int algoritmoSeleccionado = 2;
 
 // Estadissticas  
 int tiempoOPT = 0;
 int tiempoAlg = 0;
 
 int trashingOpt = 0;
+int porcentajeTrashingOpt = 0;
 int trashingAlg = 0;
+int porcentajeTrashingAlg = 0;
 
 int procesos = 0;
 
@@ -188,7 +190,7 @@ void algoritmoFIFO(int pagina, int ptr){
 int poscionSC = 0;
 void algoritmoSC(int pagina, int ptr){
     //cambiar lo que se va a hacer
-    if(poscionSC > tablaPaginasAlg.size) poscionSC = 0;
+    if(poscionSC > tablaPaginasAlg.size || poscionSC < 0) poscionSC = 0;
     int paginaCambio = 0;
     while(poscionSC <= tablaPaginasAlg.size){
         if(poscionSC == tablaPaginasAlg.size) poscionSC = 0;
@@ -243,7 +245,7 @@ void AlgoritmoRamdon(int pagina, int ptr, struct Lista *paginasUsadas){
             agregarElemento(&auxPaginas, RamAlg.datos2[i]);
         }
     }
-    imprimirLista(&auxPaginas);
+    // imprimirLista(&auxPaginas);
     agregarElemento(paginasUsadas, pagina);
     // se obtiene una pagina random
     int paginaRadom = obtenerElemento(&auxPaginas, rand()%auxPaginas.longitud);
@@ -464,7 +466,14 @@ void operacionUse(const char *cadena){
 
 void borrarPagina(int ptr){
     tablaPaginasOPT = deleteElementPage(&tablaPaginasOPT, &RamOPT, &HDD1, ptr, 0);
+    int cantidadPagBorradas = 0;
+    if(algoritmoSeleccionado == 2) cantidadPagBorradas = tablaPaginasAlg.size;
     tablaPaginasAlg = deleteElementPage(&tablaPaginasAlg, &RamAlg, &HDD2, ptr, algoritmoSeleccionado);
+    if(algoritmoSeleccionado == 2) {
+        cantidadPagBorradas -= tablaPaginasAlg.size;
+        poscionSC -= cantidadPagBorradas;
+    }
+    // printf("puntero de second chance: %d\n", poscionSC);
 }
 
 void operacionDelete(const char *cadena){
@@ -519,6 +528,28 @@ void contarPaginas(){
         else paginasFueraAlg++;
     }
 }
+
+void contarFragmentacion(){
+    fragmentacionInternaAlg = 0;
+    fragmentacionInternaOPT = 0;
+    fragmentacionInternaOPT = (tablaPaginasOPT.size*4)*1000;
+    fragmentacionInternaAlg = (tablaPaginasAlg.size*4)*1000;
+    for(int i = 0; i < tablaPunteros.size; i++){
+        fragmentacionInternaAlg -= tablaPunteros.data[i][2];
+        fragmentacionInternaOPT -= tablaPunteros.data[i][2];
+    }
+    fragmentacionInternaOPT = ((float)fragmentacionInternaOPT/1000);
+    fragmentacionInternaAlg = ((float)fragmentacionInternaAlg/1000);
+}
+
+// void contarFragmentacion(){
+//     fragmentacionInternaOPT = 0;
+//     fragmentacionInternaAlg = 0;
+//     for(int i = 0; i < tablaPaginasOPT.size; i++){
+//         if(tablaPaginasOPT.data[i][2] == 1) fragmentacionInternaOPT += 4000 - tablaPunteros.data[tablaPaginasOPT.data[i][1]][2];
+//         if(tablaPaginasAlg.data[i][2] == 1) fragmentacionInternaAlg += 4000 - tablaPunteros.data[tablaPaginasAlg.data[i][1]][2];
+//     }
+// }
 
 // int prueba5(){
 //     FILE *archivo;

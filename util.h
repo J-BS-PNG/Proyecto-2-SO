@@ -76,6 +76,39 @@ int generarRadom(int sizeProcess, int numberProcess, int sizePTRMatrix, int size
     }
 }
 
+int generarRadomV2(int sizeProcess, int sizePTRMatrix, int sizeProcessKill){
+    // Genera un número aleatorio entre 0 y 1
+    double random_number = (double)rand() / RAND_MAX;
+
+    // Define las probabilidades para cada tipo de proceso
+    double probabilidad_proceso_1 = 0.40;
+    double probabilidad_proceso_2 = 0.45;
+    double probabilidad_proceso_3 = 0.10;
+    double probabilidad_proceso_4 = 0.05;
+
+    if (random_number < probabilidad_proceso_1) {
+        return 0;
+    } else if (random_number < probabilidad_proceso_1 + probabilidad_proceso_2) {
+        return 1;
+    } else if (random_number < probabilidad_proceso_1 + probabilidad_proceso_2 + probabilidad_proceso_3) {
+        if(sizePTRMatrix <= 1){
+            return rand()%2;
+        }else{
+            return 2;
+        }
+    } else {
+        if(sizePTRMatrix <= 1) return 2;
+
+        if(sizeProcess/2 <= sizeProcessKill){
+            return 2;
+        }else{
+            return 3;
+        }
+    }
+
+}
+ 
+
 
 void createSimulationTxt(int sizeProcess, int sizeOperations, struct Matrix *mat){
     FILE *archivo;
@@ -108,7 +141,7 @@ void createSimulationTxt(int sizeProcess, int sizeOperations, struct Matrix *mat
     int randProcess = 0; // proceso random
     
     for(int i = sizePTR; i < sizeOperations -  (sizeProcess/2); i++){
-        int randOption = generarRadom(sizeProcess, sizePTR, mat->size, saveProcessKill);
+        int randOption = generarRadomV2(sizeProcess, mat->size, saveProcessKill);
         switch (randOption){
 
         case 0:

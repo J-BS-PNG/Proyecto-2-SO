@@ -522,7 +522,7 @@
 int prueba5(){
     FILE *archivo;
     regex_t regexNew, regexUse, regexDelete, regexKill;
-    char *nombreArchivo = "p.txt";
+    char *nombreArchivo = "simulation.txt";
     archivo = fopen(nombreArchivo, "r");
 
     if(archivo == NULL){
@@ -557,8 +557,8 @@ int prueba5(){
 
     char linea[100];
     printf("Se encontraron las siguientes operaciones:\n");
-    inicializarRAM(&RamOPT, 3);
-    inicializarRAM(&RamAlg, 3);
+    inicializarRAM(&RamOPT, 100);
+    inicializarRAM(&RamAlg, 100);
     int numeroProcesos = 10;
     inicializarLista(&listaProcesos, numeroProcesos); // Inicializar lista de procesos
     tablaPunteros = createMatrix(numeroProcesos, 3); // crear tabla de punteros
@@ -582,16 +582,21 @@ int prueba5(){
 
     archivo = fopen(nombreArchivo, "r");
     while(fgets(linea, sizeof(linea),archivo) != NULL){
-        // procesos = listaProcesos.longitud; // cantidad de procesos
-        // ramKBOPT = (RamAlg.capacidad - RamOPT.cantidadDatos)*4; // cantidad de KB en la RAM OPT
-        // ramKBAlg = (RamAlg.capacidad - RamAlg.cantidadDatos)*4; // cantidad de KB en la RAM de los demas algoritmos
-        // porcentajeOPT = ((double)ramKBOPT/(RamOPT.capacidad*4))*100; // porcentaje de la RAM OPT
-        // porcentajeAlg = ((double)ramKBAlg/(RamAlg.capacidad*4))*100; // porcentaje de la RAM de los demas algoritmos
-        // virtualKBOPT = HDD1.capacidad - HDD1.cantidadDatos; // cantidad de KB en la memoria virtual OPT
-        // virtualKBAlg =  HDD2.capacidad - HDD2.cantidadDatos; // cantidad de KB en la memoria virtual de los demas algoritmos
-        // porcentajeVirtualOPT = ((double)virtualKBOPT/RamOPT.capacidad)*100; // porcentaje de la memoria virtual OPT
-        // porcentajeVirtualAlg = ((double)virtualKBAlg/RamAlg.capacidad)*100; // porcentaje de la memoria virtual de los demas algoritmos
-        // contarPaginas();
+        procesos = listaProcesos.longitud; // cantidad de procesos
+        ramKBOPT = (RamAlg.capacidad - RamOPT.cantidadDatos)*4; // cantidad de KB en la RAM OPT
+        ramKBAlg = (RamAlg.capacidad - RamAlg.cantidadDatos)*4; // cantidad de KB en la RAM de los demas algoritmos
+        porcentajeOPT = ((double)ramKBOPT/(RamOPT.capacidad*4))*100; // porcentaje de la RAM OPT
+        porcentajeAlg = ((double)ramKBAlg/(RamAlg.capacidad*4))*100; // porcentaje de la RAM de los demas algoritmos
+        virtualKBOPT = HDD1.capacidad - HDD1.cantidadDatos; // cantidad de KB en la memoria virtual OPT
+        virtualKBAlg =  HDD2.capacidad - HDD2.cantidadDatos; // cantidad de KB en la memoria virtual de los demas algoritmos
+        porcentajeVirtualOPT = ((double)virtualKBOPT/RamOPT.capacidad)*100; // porcentaje de la memoria virtual OPT
+        porcentajeVirtualAlg = ((double)virtualKBAlg/RamAlg.capacidad)*100; // porcentaje de la memoria virtual de los demas algoritmos
+        if(tiempoAlg != 0 ){
+            porcentajeTrashingAlg = ((double)trashingAlg/tiempoAlg)*100; // porcentaje de trashing de los demas algoritmos
+            porcentajeTrashingOpt = ((double)trashingOpt/tiempoOPT)*100; // porcentaje de trashing de OPT
+        }
+        contarPaginas();
+        contarFragmentacion();
         // printf("Procesos: %d\n", procesos);
         // printf("Tiempo opt: %d\n", tiempoOPT);
         // printf("Ram KB opt: %d\n", ramKBOPT);
@@ -601,17 +606,21 @@ int prueba5(){
         // printf("Paginas Cargadas: %d\n", paginasCargadaOPT);
         // printf("Paginas fuera: %d\n", paginasFueraOPT);
         // printf("Trashing opt: %d\n", trashingOpt);
+        // printf("Porcentaje trashing opt: %d\n", porcentajeTrashingOpt);
+        // printf("Fragmentacion opt: %d\n", fragmentacionInternaOPT);
         // printf("----------------------------------------\n");
-        // printf("Procesos: %d\n", procesos);
-        // printf("Tiempo alg: %d\n", tiempoAlg);
-        // printf("Ram KB alg: %d\n", ramKBAlg);
-        // printf("RAM %% %d\n", porcentajeAlg);
-        // printf("V-RAM KB: %d\n", virtualKBAlg);
-        // printf("V-RAM %%: %d\n", porcentajeVirtualAlg);
-        // printf("Paginas Cargadas: %d\n", paginasCargadaAlg);
-        // printf("Paginas fuera: %d\n", paginasFueraAlg);
-        // printf("Trashing alg: %d\n", trashingAlg);
-        // printf("----------------------------------------\n");
+        printf("Procesos: %d\n", procesos);
+        printf("Tiempo alg: %d\n", tiempoAlg);
+        printf("Ram KB alg: %d\n", ramKBAlg);
+        printf("RAM %% %d\n", porcentajeAlg);
+        printf("V-RAM KB: %d\n", virtualKBAlg);
+        printf("V-RAM %%: %d\n", porcentajeVirtualAlg);
+        printf("Paginas Cargadas: %d\n", paginasCargadaAlg);
+        printf("Paginas fuera: %d\n", paginasFueraAlg);
+        printf("Trashing alg: %d\n", trashingAlg);
+        printf("Porcentaje trashing alg: %d\n", porcentajeTrashingAlg);
+        printf("Fragmentacion alg: %d\n", fragmentacionInternaAlg);
+        printf("----------------------------------------\n");
 
         status = regexec(&regexNew, linea, 0, NULL, 0);
         if (status == 0) {
@@ -636,19 +645,21 @@ int prueba5(){
             printf("%s", linea); // se hace operacion
             operacionKill(linea); 
         }
+
+        sleep(1);
         // printf("Lista de procesosos a Futuro :");
         // imprimirLista(&futuroOPT);
-        imprimirRAMPaginas(&RamOPT);
-        imprimirVirtual(&HDD1);
-        printf("Ram de los algoritmos\n");
-        imprimirRAMPaginas(&RamAlg);
-        imprimirVirtual(&HDD2);
+        // imprimirRAMPaginas(&RamOPT);
+        // imprimirVirtual(&HDD1);
+        // printf("Ram de los algoritmos\n");
+        // imprimirRAMPaginas(&RamAlg);
+        // imprimirVirtual(&HDD2);
         
         // imprimirLista(&listaProcesos);
         // printf("Tabla de Paginas OPT\n");
         // printMatrix(&tablaPaginasOPT);
-        printf("Tabla de Paginas ALG\n");
-        printMatrix(&tablaPaginasAlg);
+        // printf("Tabla de Paginas ALG\n");
+        // printMatrix(&tablaPaginasAlg);
     }
     //liberar memoria
     regfree(&regexDelete);
