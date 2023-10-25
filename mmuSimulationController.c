@@ -178,14 +178,8 @@ gboolean limpiarTabla2(gpointer data) {
     return G_SOURCE_REMOVE; 
 }
 
-//para almacenar los colores asociados a los procesos
-typedef struct {
-    int pid;
-    GdkRGBA color;
-} ProcessColor;
-
-int keysPid[100];
-GdkRGBA valuesColor[100];
+int keysPid[150];
+GdkRGBA valuesColor[150];
 int sizePid = 0;
 
 void addKeyValue(int key, GdkRGBA value) {
@@ -217,7 +211,7 @@ bool isKeyInDic(int key) {
 void set_widget_color(GtkWidget *widget, const gchar *css_class, const gchar *color) {
     GtkCssProvider *provider = gtk_css_provider_new();
     gchar *css_data = g_strdup_printf("#%s { background: %s; }", css_class, color);
-    printf("%s\n", css_data);
+    //printf("%s\n", css_data);
     gtk_css_provider_load_from_data(provider, css_data, -1, NULL);
     g_free(css_data);
 
@@ -263,7 +257,7 @@ gboolean createTableAlg(gpointer data){
         gchar hexColor[8] = " "; // 9 caracteres para RGB (dos para cada componente) + terminador nulo
         g_snprintf(hexColor, sizeof(hexColor), "#%02X%02X%02X", red, green, blue);
 
-        printf("Proceso ID: %d, Hex Color: %s\n", procesoID, hexColor);
+        //printf("Proceso ID: %d, Hex Color: %s\n", procesoID, hexColor);
 
         set_widget_color(labelPageID, "neutro", hexColor);
         gtk_widget_set_name(labelPageID, "neutro");
@@ -358,7 +352,6 @@ gboolean createTableAlg(gpointer data){
     return G_SOURCE_REMOVE; 
 }
 
-
 gboolean createTableOpt(gpointer data){
 
     for(int i = 0; i < tablaPaginasOPT.size; i++){
@@ -396,7 +389,7 @@ gboolean createTableOpt(gpointer data){
         gchar hexColor[8] = " "; // 9 caracteres para RGB (dos para cada componente) + terminador nulo
         g_snprintf(hexColor, sizeof(hexColor), "#%02X%02X%02X", red, green, blue);
 
-        printf("Proceso ID: %d, Hex Color: %s\n", procesoID, hexColor);
+        //printf("Proceso ID: %d, Hex Color: %s\n", procesoID, hexColor);
 
         set_widget_color(labelPageID, "neutro", hexColor);
         gtk_widget_set_name(labelPageID, "neutro");
