@@ -11,6 +11,9 @@
 #include "matriz.h"
 #include "mmu.h"
 
+
+GtkCssProvider *provider;
+GFile *css_fp;
 //Widgets del menu
 GtkWidget* windowMenu;
 
@@ -175,6 +178,53 @@ gboolean limpiarTabla2(gpointer data) {
     return G_SOURCE_REMOVE; 
 }
 
+//para almacenar los colores asociados a los procesos
+typedef struct {
+    int pid;
+    GdkRGBA color;
+} ProcessColor;
+
+int keysPid[100];
+GdkRGBA valuesColor[100];
+int sizePid = 0;
+
+void addKeyValue(int key, GdkRGBA value) {
+    keysPid[sizePid] = key;
+    valuesColor[sizePid] = value;
+    sizePid++;
+}
+
+GdkRGBA getValueByKey(int key) {
+    for (int i = 0; i < sizePid; i++) {
+        if (keysPid[i] == key) {
+            return valuesColor[i];
+        }
+    }
+    
+    GdkRGBA defaultColor = {0, 0, 0, 1}; // Color negro por defecto
+    return defaultColor;
+}
+
+bool isKeyInDic(int key) {
+    for (int i = 0; i < sizePid; i++) {
+        if (keysPid[i] == key) {
+            return true; // The key is in the dictionary
+        }
+    }
+    return false; // The key is not in the dictionary
+}
+
+void set_widget_color(GtkWidget *widget, const gchar *css_class, const gchar *color) {
+    GtkCssProvider *provider = gtk_css_provider_new();
+    gchar *css_data = g_strdup_printf("#%s { background: %s; }", css_class, color);
+    printf("%s\n", css_data);
+    gtk_css_provider_load_from_data(provider, css_data, -1, NULL);
+    g_free(css_data);
+
+    GtkStyleContext *context = gtk_widget_get_style_context(widget);
+    gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(provider);
+}
 
 gboolean createTableAlg(gpointer data){
 
@@ -187,10 +237,42 @@ gboolean createTableAlg(gpointer data){
         gtk_widget_set_name(labelPageID, "neutro");
         gtk_grid_attach(GTK_GRID(algTable), labelPageID, 0, i, 1, 1);
 
+        //REVISAR ALAMACENAMIENTO DE LA ASOCIACION DE LOS PID Y LOS COLORES
         //Columna PID
         int procesoID = getProcessElementPtr(&tablaPunteros, tablaPaginasAlg.data[i][1]);
+        if(!isKeyInDic(procesoID)) {
+            GdkRGBA color;
+            // Generar un color aleatorio (puedes personalizar esta lógica)
+            color.red = g_random_double_range(50, 256);   // Rango de 50 a 255 para evitar valores bajos
+            color.green = g_random_double_range(50, 256); // Rango de 50 a 255 para evitar valores bajos
+            color.blue = g_random_double_range(50, 256);  // Rango de 50 a 255 para evitar valores bajo
+            color.alpha = g_random_double_range(1, 256) / 255.0; 
+            addKeyValue(procesoID, color);
+        }
+
+    
+        // Establecer el color de fondo de la etiqueta según el color asociado al PID
+        GdkRGBA rgbaColor = getValueByKey(procesoID);
+
+        // Obtén el color de fondo en formato hexadecimal
+        int red = (int)(rgbaColor.red * 255);
+        int green = (int)(rgbaColor.green * 255);
+        int blue = (int)(rgbaColor.blue * 255);
+        int alpha = (int)(rgbaColor.alpha * 255);
+
+        gchar hexColor[8] = " "; // 9 caracteres para RGB (dos para cada componente) + terminador nulo
+        g_snprintf(hexColor, sizeof(hexColor), "#%02X%02X%02X", red, green, blue);
+
+        printf("Proceso ID: %d, Hex Color: %s\n", procesoID, hexColor);
+
+        set_widget_color(labelPageID, "neutro", hexColor);
+        gtk_widget_set_name(labelPageID, "neutro");
+        
+
+
         sprintf(buffer, "%d", procesoID);
         GtkWidget *labelPID = gtk_label_new(buffer);
+        set_widget_color(labelPID, "neutro", hexColor);
         gtk_widget_set_name(labelPID, "neutro");
         gtk_grid_attach(GTK_GRID(algTable), labelPID, 1, i, 1, 1);
 
@@ -199,64 +281,75 @@ gboolean createTableAlg(gpointer data){
         if(tablaPaginasAlg.data[i][2] == 1){
             // muestra una X si esta cargada
             GtkWidget *labelLoaded = gtk_label_new("X");
+            set_widget_color(labelLoaded, "neutro", hexColor);
             gtk_widget_set_name(labelLoaded, "neutro");
             gtk_grid_attach(GTK_GRID(algTable), labelLoaded, 2, i, 1, 1);
             
             //Columna L-ADDR
             sprintf(buffer, "%d", tablaPaginasAlg.data[i][1]);
             GtkWidget *labelL_ADDR = gtk_label_new(buffer);
+            set_widget_color(labelL_ADDR, "neutro", hexColor);
             gtk_widget_set_name(labelL_ADDR, "neutro");
             gtk_grid_attach(GTK_GRID(algTable), labelL_ADDR, 3, i, 1, 1);
 
             //Columna M-ADDR
             sprintf(buffer, "%d", tablaPaginasAlg.data[i][3]);
             GtkWidget *labelM_ADDR = gtk_label_new(buffer);
+            set_widget_color(labelM_ADDR, "neutro", hexColor);
             gtk_widget_set_name(labelM_ADDR, "neutro");
             gtk_grid_attach(GTK_GRID(algTable), labelM_ADDR, 4, i, 1, 1);
 
             //Columna D-ADDR
             
             GtkWidget *labelD_ADDR = gtk_label_new("");
+            set_widget_color(labelD_ADDR, "neutro", hexColor);
             gtk_widget_set_name(labelD_ADDR, "neutro");
             gtk_grid_attach(GTK_GRID(algTable), labelD_ADDR, 5, i, 1, 1);
             
             //Columna LOADED-T
             sprintf(buffer, "%d", tablaPaginasAlg.data[i][4]);
             GtkWidget *labelLoaded_T = gtk_label_new(buffer);
+            set_widget_color(labelLoaded_T, "neutro", hexColor);
             gtk_widget_set_name(labelLoaded_T, "neutro");
             gtk_grid_attach(GTK_GRID(algTable), labelLoaded_T, 6, i, 1, 1);
 
         }else{
             // muestra una X si esta cargada
             GtkWidget *labelLoaded = gtk_label_new("");
+            set_widget_color(labelLoaded, "neutro", hexColor);
             gtk_widget_set_name(labelLoaded, "neutro");
             gtk_grid_attach(GTK_GRID(algTable), labelLoaded, 2, i, 1, 1);
             
             //Columna L-ADDR
             sprintf(buffer, "%d", tablaPaginasAlg.data[i][1]);
             GtkWidget *labelL_ADDR = gtk_label_new(buffer);
+            set_widget_color(labelL_ADDR, "neutro", hexColor);
             gtk_widget_set_name(labelL_ADDR, "neutro");
             gtk_grid_attach(GTK_GRID(algTable), labelL_ADDR, 3, i, 1, 1);
 
             //Columna M-ADDR
             GtkWidget *labelM_ADDR = gtk_label_new("");
+            set_widget_color(labelM_ADDR, "neutro", hexColor);
             gtk_widget_set_name(labelM_ADDR, "neutro");
             gtk_grid_attach(GTK_GRID(algTable), labelM_ADDR, 4, i, 1, 1);
 
             //Columna D-ADDR
             sprintf(buffer, "%d", tablaPaginasAlg.data[i][3]);
             GtkWidget *labelD_ADDR = gtk_label_new(buffer);
+            set_widget_color(labelD_ADDR, "neutro", hexColor);
             gtk_widget_set_name(labelD_ADDR, "neutro");
             gtk_grid_attach(GTK_GRID(algTable), labelD_ADDR, 5, i, 1, 1);
             
             //Columna LOADED-T
             GtkWidget *labelLoaded_T = gtk_label_new("");
+            set_widget_color(labelLoaded_T, "neutro", hexColor);
             gtk_widget_set_name(labelLoaded_T, "neutro");
             gtk_grid_attach(GTK_GRID(algTable), labelLoaded_T, 6, i, 1, 1);
         }
 
         //Columna MARK
         GtkWidget *labelMark = gtk_label_new("");
+        set_widget_color(labelMark, "neutro", hexColor);
         gtk_widget_set_name(labelMark, "neutro");
         gtk_grid_attach(GTK_GRID(algTable), labelMark, 7, i, 1, 1);
 
@@ -267,6 +360,7 @@ gboolean createTableAlg(gpointer data){
 
 
 gboolean createTableOpt(gpointer data){
+
     for(int i = 0; i < tablaPaginasOPT.size; i++){
 
         //Columna Page ID
@@ -527,13 +621,13 @@ void iniciarSimulacionEnHilo() {
 
 //css de toda la vida
 static void load_css(void){
-    GtkCssProvider *provider;
+    
     GdkDisplay *display;
     GdkScreen * screen;
     
     const gchar *css_style_file = "styles.css";
     
-    GFile *css_fp = g_file_new_for_path(css_style_file);
+    css_fp = g_file_new_for_path(css_style_file);
     
     GError * error = 0;
     
