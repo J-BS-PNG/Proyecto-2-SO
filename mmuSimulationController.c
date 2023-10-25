@@ -372,8 +372,39 @@ gboolean createTableOpt(gpointer data){
 
         //Columna PID
         int procesoID = getProcessElementPtr(&tablaPunteros, tablaPaginasOPT.data[i][1]);
+
+        if(!isKeyInDic(procesoID)) {
+            GdkRGBA color;
+            // Generar un color aleatorio (puedes personalizar esta lógica)
+            color.red = g_random_double_range(50, 256);   // Rango de 50 a 255 para evitar valores bajos
+            color.green = g_random_double_range(50, 256); // Rango de 50 a 255 para evitar valores bajos
+            color.blue = g_random_double_range(50, 256);  // Rango de 50 a 255 para evitar valores bajo
+            color.alpha = g_random_double_range(1, 256) / 255.0; 
+            addKeyValue(procesoID, color);
+        }
+
+    
+        // Establecer el color de fondo de la etiqueta según el color asociado al PID
+        GdkRGBA rgbaColor = getValueByKey(procesoID);
+
+        // Obtén el color de fondo en formato hexadecimal
+        int red = (int)(rgbaColor.red * 255);
+        int green = (int)(rgbaColor.green * 255);
+        int blue = (int)(rgbaColor.blue * 255);
+        int alpha = (int)(rgbaColor.alpha * 255);
+
+        gchar hexColor[8] = " "; // 9 caracteres para RGB (dos para cada componente) + terminador nulo
+        g_snprintf(hexColor, sizeof(hexColor), "#%02X%02X%02X", red, green, blue);
+
+        printf("Proceso ID: %d, Hex Color: %s\n", procesoID, hexColor);
+
+        set_widget_color(labelPageID, "neutro", hexColor);
+        gtk_widget_set_name(labelPageID, "neutro");
+
+
         sprintf(buffer, "%d", procesoID);
         GtkWidget *labelPID = gtk_label_new(buffer);
+        set_widget_color(labelPID, "neutro", hexColor);
         gtk_widget_set_name(labelPID, "neutro");
         gtk_grid_attach(GTK_GRID(optTable), labelPID, 1, i, 1, 1);
 
@@ -382,64 +413,74 @@ gboolean createTableOpt(gpointer data){
         if(tablaPaginasOPT.data[i][2] == 1){
             // muestra una X si esta cargada
             GtkWidget *labelLoaded = gtk_label_new("X");
+            set_widget_color(labelLoaded, "neutro", hexColor);
             gtk_widget_set_name(labelLoaded, "neutro");
             gtk_grid_attach(GTK_GRID(optTable), labelLoaded, 2, i, 1, 1);
             
             //Columna L-ADDR
             sprintf(buffer, "%d", tablaPaginasOPT.data[i][1]);
             GtkWidget *labelL_ADDR = gtk_label_new(buffer);
+            set_widget_color(labelL_ADDR, "neutro", hexColor);
             gtk_widget_set_name(labelL_ADDR, "neutro");
             gtk_grid_attach(GTK_GRID(optTable), labelL_ADDR, 3, i, 1, 1);
 
             //Columna M-ADDR
             sprintf(buffer, "%d", tablaPaginasOPT.data[i][3]);
             GtkWidget *labelM_ADDR = gtk_label_new(buffer);
+            set_widget_color(labelM_ADDR, "neutro", hexColor);
             gtk_widget_set_name(labelM_ADDR, "neutro");
             gtk_grid_attach(GTK_GRID(optTable), labelM_ADDR, 4, i, 1, 1);
 
             //Columna D-ADDR
             
             GtkWidget *labelD_ADDR = gtk_label_new("");
+            set_widget_color(labelD_ADDR, "neutro", hexColor);
             gtk_widget_set_name(labelD_ADDR, "neutro");
             gtk_grid_attach(GTK_GRID(optTable), labelD_ADDR, 5, i, 1, 1);
             
             //Columna LOADED-T
             sprintf(buffer, "%d", tablaPaginasOPT.data[i][4]);
             GtkWidget *labelLoaded_T = gtk_label_new(buffer);
+            set_widget_color(labelLoaded_T, "neutro", hexColor);
             gtk_widget_set_name(labelLoaded_T, "neutro");
             gtk_grid_attach(GTK_GRID(optTable), labelLoaded_T, 6, i, 1, 1);
 
         }else{
             // muestra una X si esta cargada
             GtkWidget *labelLoaded = gtk_label_new("");
+            set_widget_color(labelLoaded, "neutro", hexColor);
             gtk_widget_set_name(labelLoaded, "neutro");
             gtk_grid_attach(GTK_GRID(optTable), labelLoaded, 2, i, 1, 1);
             
             //Columna L-ADDR
             sprintf(buffer, "%d", tablaPaginasOPT.data[i][1]);
             GtkWidget *labelL_ADDR = gtk_label_new(buffer);
-            gtk_widget_set_name(labelL_ADDR, "neutro");
+            set_widget_color(labelL_ADDR, "neutro", hexColor);
             gtk_grid_attach(GTK_GRID(optTable), labelL_ADDR, 3, i, 1, 1);
 
             //Columna M-ADDR
             GtkWidget *labelM_ADDR = gtk_label_new("");
+            set_widget_color(labelM_ADDR, "neutro", hexColor);
             gtk_widget_set_name(labelM_ADDR, "neutro");
             gtk_grid_attach(GTK_GRID(optTable), labelM_ADDR, 4, i, 1, 1);
 
             //Columna D-ADDR
             sprintf(buffer, "%d", tablaPaginasOPT.data[i][3]);
             GtkWidget *labelD_ADDR = gtk_label_new(buffer);
+            set_widget_color(labelD_ADDR, "neutro", hexColor);
             gtk_widget_set_name(labelD_ADDR, "neutro");
             gtk_grid_attach(GTK_GRID(optTable), labelD_ADDR, 5, i, 1, 1);
             
             //Columna LOADED-T
             GtkWidget *labelLoaded_T = gtk_label_new("");
+            set_widget_color(labelLoaded_T, "neutro", hexColor);
             gtk_widget_set_name(labelLoaded_T, "neutro");
             gtk_grid_attach(GTK_GRID(optTable), labelLoaded_T, 6, i, 1, 1);
         }
 
         //Columna MARK
         GtkWidget *labelMark = gtk_label_new("");
+        set_widget_color(labelMark, "neutro", hexColor);
         gtk_widget_set_name(labelMark, "neutro");
         gtk_grid_attach(GTK_GRID(optTable), labelMark, 7, i, 1, 1);
 
