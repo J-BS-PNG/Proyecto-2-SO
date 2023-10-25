@@ -1,23 +1,35 @@
+# Nombre del ejecutable
+TARGET = mmuSimulation
+
+# Compilador
 CC = gcc
-CFLAGS = -Wall -Werror -g
 
-TARGET = programa
-SOURCES = pruebas.c
+# Opciones de compilación
+CFLAGS = -Wall -g `pkg-config --cflags gtk+-3.0`
+
+# Bibliotecas
+LIBS = `pkg-config --libs gtk+-3.0`
+
+# Archivos fuente
+SOURCES = mmuSimulationController.c
+GLADE_FILE = mmuSimulation.glade
+HEADERS = listA.h matriz.h sram.h svirtual.h util.h
+
+# Objetos generados a partir de archivos fuente
 OBJECTS = $(SOURCES:.c=.o)
-
-# Agrega aquí cualquier otra dependencia si es necesario
-DEPENDENCIES = matriz.h listA.h sram.h util.h svirtual.h mmu.h
 
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJECTS)
+	$(CC) $(OBJECTS) -o $(TARGET) $(LIBS)
 
-%.o: %.c $(DEPENDENCIES)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-run: $(TARGET)
-	./$(TARGET)
+$(OBJECTS): $(SOURCES) $(HEADERS)
+	$(CC) $(CFLAGS) -c $(SOURCES)
 
 clean:
 	rm -f $(TARGET) $(OBJECTS)
+
+run: $(TARGET)
+	./$(TARGET) $(GLADE_FILE)
+
+.PHONY: all clean run
