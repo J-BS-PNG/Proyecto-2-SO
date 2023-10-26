@@ -49,8 +49,11 @@ GtkWidget* pausarSimulacionButton;
 GtkWidget* reanudarSimulacionButton;
 GtkWidget* detenerSimulacionButton;
 
-GtkWidget* optRam;
-GtkWidget* algRam;
+GtkWidget* labelRamAlg;
+GtkWidget* labelMMUAlg;
+
+GtkGrid* optRam;
+GtkGrid* algRam;
 
 GtkGrid* optTable;
 GtkGrid* algTable;
@@ -67,7 +70,7 @@ GtkWidget* unloadedOPT;
 GtkWidget* tarshIOPT;
 GtkWidget* trashDOPT;
 GtkWidget* fragOPT;
-
+GtkWidget* trashTitleALG;
 //ESTADISTICA ALGORITMO
 GtkWidget* processALG;
 GtkWidget* timeALG;
@@ -77,6 +80,7 @@ GtkWidget* VRamALG;
 GtkWidget* vRamPALG;
 GtkWidget* loadedALG;
 GtkWidget* unloadedALG;
+GtkWidget* trashTitleOPT;
 GtkWidget* tarshIALG;
 GtkWidget* trashDALG;
 GtkWidget* fragALG;
@@ -213,17 +217,17 @@ GdkRGBA getValueByKey(int key) {
         }
     }
     
-    GdkRGBA defaultColor = {0, 0, 0, 1}; // Color negro por defecto
+    GdkRGBA defaultColor = {0, 0, 0, 1}; 
     return defaultColor;
 }
 
 bool isKeyInDic(int key) {
     for (int i = 0; i < sizePid; i++) {
         if (keysPid[i] == key) {
-            return true; // The key is in the dictionary
+            return true; 
         }
     }
-    return false; // The key is not in the dictionary
+    return false; 
 }
 
 void set_widget_color(GtkWidget *widget, const gchar *css_class, const gchar *color) {
@@ -238,10 +242,65 @@ void set_widget_color(GtkWidget *widget, const gchar *css_class, const gchar *co
     g_object_unref(provider);
 }
 
+
+void setRamAlg(){
+    gtk_grid_remove_row(algRam, 0);
+    for(int i = 0; i < RamAlg.capacidad; i++){
+        GtkWidget *espacio = gtk_label_new(" ");
+        gtk_widget_set_name(espacio, "neutro");
+        GdkRGBA rgbaColor = {0, 0, 0, 1}; 
+        int pid = RamAlg.datos[i];
+
+        if(pid != -1){
+            rgbaColor = getValueByKey(pid);
+        }
+
+
+        //el color de fondo en formato hexadecimal
+        int red = (int)(rgbaColor.red * 255);
+        int green = (int)(rgbaColor.green * 255);
+        int blue = (int)(rgbaColor.blue * 255);
+
+
+        gchar hexColor[8] = " "; 
+        g_snprintf(hexColor, sizeof(hexColor), "#%02X%02X%02X", red, green, blue);
+
+        set_widget_color(espacio, "neutro", hexColor);
+        gtk_grid_attach(GTK_GRID(algRam), espacio, i, 0, 1, 1);
+    }
+}
+
+void setRamOpt(){
+    gtk_grid_remove_row(optRam, 0);
+    for(int i = 0; i < RamOPT.capacidad; i++){
+        GtkWidget *espacio = gtk_label_new(" ");
+        gtk_widget_set_name(espacio, "neutro");
+        GdkRGBA rgbaColor = {0, 0, 0, 1}; 
+        int pid = RamOPT.datos[i];
+
+        if(pid != -1){
+            rgbaColor = getValueByKey(pid);
+        }
+
+
+        //el color de fondo en formato hexadecimal
+        int red = (int)(rgbaColor.red * 255);
+        int green = (int)(rgbaColor.green * 255);
+        int blue = (int)(rgbaColor.blue * 255);
+
+
+        gchar hexColor[8] = " "; 
+        g_snprintf(hexColor, sizeof(hexColor), "#%02X%02X%02X", red, green, blue);
+
+        set_widget_color(espacio, "neutro", hexColor);
+        gtk_grid_attach(GTK_GRID(optRam), espacio, i, 0, 1, 1);
+
+    }
+}
+
 gboolean createTableAlg(gpointer data){
 
     for(int i = 0; i < tablaPaginasAlg.size; i++){
-
         //Columna Page ID
         char buffer[10];
         sprintf(buffer, "%d", tablaPaginasAlg.data[i][0]);
@@ -255,9 +314,9 @@ gboolean createTableAlg(gpointer data){
         if(!isKeyInDic(procesoID)) {
             GdkRGBA color;
             // Generar un color aleatorio (puedes personalizar esta lógica)
-            color.red = g_random_double_range(50, 256);   // Rango de 50 a 255 para evitar valores bajos
-            color.green = g_random_double_range(50, 256); // Rango de 50 a 255 para evitar valores bajos
-            color.blue = g_random_double_range(50, 256);  // Rango de 50 a 255 para evitar valores bajo
+            color.red = g_random_double_range(50, 256);  
+            color.green = g_random_double_range(50, 256); 
+            color.blue = g_random_double_range(50, 256);  
             color.alpha = g_random_double_range(1, 256) / 255.0; 
             addKeyValue(procesoID, color);
         }
@@ -266,11 +325,11 @@ gboolean createTableAlg(gpointer data){
         // Establecer el color de fondo de la etiqueta según el color asociado al PID
         GdkRGBA rgbaColor = getValueByKey(procesoID);
 
-        // Obtén el color de fondo en formato hexadecimal
+        //el color de fondo en formato hexadecimal
         int red = (int)(rgbaColor.red * 255);
         int green = (int)(rgbaColor.green * 255);
         int blue = (int)(rgbaColor.blue * 255);
-        int alpha = (int)(rgbaColor.alpha * 255);
+
 
         gchar hexColor[8] = " "; // 9 caracteres para RGB (dos para cada componente) + terminador nulo
         g_snprintf(hexColor, sizeof(hexColor), "#%02X%02X%02X", red, green, blue);
@@ -360,10 +419,19 @@ gboolean createTableAlg(gpointer data){
         }
 
         //Columna MARK
-        GtkWidget *labelMark = gtk_label_new("");
-        set_widget_color(labelMark, "neutro", hexColor);
-        gtk_widget_set_name(labelMark, "neutro");
-        gtk_grid_attach(GTK_GRID(algTable), labelMark, 7, i, 1, 1);
+        if(algoritmoSeleccionado == 2 || algoritmoSeleccionado == 3){
+            sprintf(buffer, "%d", tablaPaginasAlg.data[i][5]);
+            GtkWidget *labelMark = gtk_label_new(buffer);
+            set_widget_color(labelMark, "neutro", hexColor);
+            gtk_widget_set_name(labelMark, "neutro");
+            gtk_grid_attach(GTK_GRID(algTable), labelMark, 7, i, 1, 1);
+        } else {
+            GtkWidget *labelMark = gtk_label_new("");
+            set_widget_color(labelMark, "neutro", hexColor);
+            gtk_widget_set_name(labelMark, "neutro");
+            gtk_grid_attach(GTK_GRID(algTable), labelMark, 7, i, 1, 1);
+        }
+
 
     }
 
@@ -402,7 +470,6 @@ gboolean createTableOpt(gpointer data){
         int red = (int)(rgbaColor.red * 255);
         int green = (int)(rgbaColor.green * 255);
         int blue = (int)(rgbaColor.blue * 255);
-        int alpha = (int)(rgbaColor.alpha * 255);
 
         gchar hexColor[8] = " "; // 9 caracteres para RGB (dos para cada componente) + terminador nulo
         g_snprintf(hexColor, sizeof(hexColor), "#%02X%02X%02X", red, green, blue);
@@ -502,9 +569,9 @@ gboolean createTableOpt(gpointer data){
 }
 
 gboolean mi_funcion_actualizar_interfaz(gpointer data) {
-    // Actualiza la interfaz de usuario aquí
+   
     gtk_widget_show_all(windowSimulacion); 
-    return G_SOURCE_REMOVE;  // Indica que esta función se debe eliminar después de ejecutarse
+    return G_SOURCE_REMOVE; 
 }
 
 void actualizarEstadisticas(){
@@ -524,6 +591,27 @@ void actualizarEstadisticas(){
     if(tiempoAlg != 0 ){
         porcentajeTrashingAlg = ((double)trashingAlg/tiempoAlg)*100; // porcentaje de trashing de los demas algoritmos
         porcentajeTrashingOpt = ((double)trashingOpt/tiempoOPT)*100; // porcentaje de trashing de OPT
+
+        if(porcentajeTrashingAlg >= 50){
+            gtk_widget_set_name(tarshIALG, "rojo");
+            gtk_widget_set_name(trashDALG, "rojo");
+            gtk_widget_set_name(trashTitleALG, "rojo");
+        } else{
+            gtk_widget_set_name(tarshIALG, "neutro");
+            gtk_widget_set_name(trashDALG, "neutro");
+            gtk_widget_set_name(trashTitleALG, "neutro");
+        }
+
+        if(porcentajeTrashingOpt >= 50){
+            gtk_widget_set_name(tarshIOPT, "rojo");
+            gtk_widget_set_name(trashDOPT, "rojo");
+            gtk_widget_set_name(trashTitleOPT, "rojo");
+
+        }else{
+            gtk_widget_set_name(tarshIOPT, "neutro");
+            gtk_widget_set_name(trashDOPT, "neutro");
+            gtk_widget_set_name(trashTitleOPT, "neutro");
+        }
     }
 
     contarPaginas();
@@ -618,8 +706,11 @@ void *prueba5(void *data){
             g_idle_add(limpiarTabla2, NULL);
             printf("%s", linea); // se hace operacion
             operacionNew(linea);
+
             g_idle_add(createTableOpt, NULL);
             g_idle_add(createTableAlg, NULL);
+            g_idle_add(setRamAlg, NULL);
+            g_idle_add(setRamOpt, NULL);
             g_idle_add(mi_funcion_actualizar_interfaz, NULL); 
 
         }
@@ -632,6 +723,8 @@ void *prueba5(void *data){
             operacionUse(linea);
             g_idle_add(createTableOpt, NULL);
             g_idle_add(createTableAlg, NULL);
+            g_idle_add(setRamAlg, NULL);
+            g_idle_add(setRamOpt, NULL);
             g_idle_add(mi_funcion_actualizar_interfaz, NULL); 
         }
 
@@ -643,6 +736,8 @@ void *prueba5(void *data){
             operacionDelete(linea);
             g_idle_add(createTableOpt, NULL);
             g_idle_add(createTableAlg, NULL);
+            g_idle_add(setRamAlg, NULL);
+            g_idle_add(setRamOpt, NULL);
             g_idle_add(mi_funcion_actualizar_interfaz, NULL); 
         }
 
@@ -654,6 +749,8 @@ void *prueba5(void *data){
             operacionKill(linea);
             g_idle_add(createTableOpt, NULL);
             g_idle_add(createTableAlg, NULL);
+            g_idle_add(setRamAlg, NULL);
+            g_idle_add(setRamOpt, NULL);
             g_idle_add(mi_funcion_actualizar_interfaz, NULL); 
         }
 
@@ -772,12 +869,20 @@ void selectAlgorithm(GtkWidget *widget, gpointer data) {
     // Almacenar el valor correspondiente
     if (fifoChecked) {
         algoritmoSeleccionado = 1;
+        gtk_label_set_text (labelRamAlg, "RAM - FIFO");
+        gtk_label_set_text (labelMMUAlg, "MMU - FIFO");
     } else if (scChecked) {
         algoritmoSeleccionado = 2;
+        gtk_label_set_text (labelRamAlg, "RAM - SECOND CHANCE");
+        gtk_label_set_text (labelMMUAlg, "MMU - SECOND CHANCE");
     } else if (mruChecked) {
         algoritmoSeleccionado = 3;
+        gtk_label_set_text (labelRamAlg, "RAM - MRU");
+        gtk_label_set_text (labelMMUAlg, "MMU - MRU");
     } else if (rndChecked) {
         algoritmoSeleccionado = 4;
+        gtk_label_set_text (labelRamAlg, "RAM - RANDOM");
+        gtk_label_set_text (labelMMUAlg, "MMU - RANDOM");
     }
 
 
@@ -875,6 +980,12 @@ int main(int argc, char *argv[]){
     //label
 
     archivoLabel = GTK_WIDGET(gtk_builder_get_object(builder, "estado_archivo")); 
+
+    labelRamAlg = GTK_WIDGET(gtk_builder_get_object(builder, "label_ram_alg")); 
+    labelMMUAlg = GTK_WIDGET(gtk_builder_get_object(builder, "label_mmu_alg")); 
+    
+    trashTitleOPT = GTK_WIDGET(gtk_builder_get_object(builder, "trashing_opt")); 
+    trashTitleALG = GTK_WIDGET(gtk_builder_get_object(builder, "trashing_alg")); 
     //estadisticas opt
     processOPT = GTK_WIDGET(gtk_builder_get_object(builder, "cant_processes_opt")); 
     timeOPT = GTK_WIDGET(gtk_builder_get_object(builder, "time_opt")); 
@@ -919,8 +1030,10 @@ int main(int argc, char *argv[]){
     //GRIDS
     selectAlgorithmTable = GTK_GRID(gtk_builder_get_object(builder, "select_algorithm"));
     optTable = GTK_GRID(gtk_builder_get_object(builder, "opt_table"));
-
     algTable = GTK_GRID(gtk_builder_get_object(builder, "alg_table"));
+
+    optRam = GTK_GRID(gtk_builder_get_object(builder, "ram_opt"));
+    algRam = GTK_GRID(gtk_builder_get_object(builder, "ram_alg"));
 
 
     //ASIGN VARIABLES
