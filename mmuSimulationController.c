@@ -77,6 +77,11 @@ GtkWidget* tarshIALG;
 GtkWidget* trashDALG;
 GtkWidget* fragALG;
 
+//FILE CHOOSER THINGYS
+GtkWidget* fileChooser;
+GtkWidget* fileButton;
+GtkWidget* exitChooserButton;
+
 void estadisticasAlg(){
     char processAlgText[20];
     char timeAlgText[20];
@@ -772,6 +777,41 @@ void init_simulacion(){
     liberarMemoriaPrograma();
 }
 
+void on_file_chooser_button_clicked(GtkWidget *button, gpointer window) {
+    GtkWidget *dialog;
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+    gint res;
+
+    dialog = gtk_file_chooser_dialog_new("Open File", GTK_WINDOW(window), action, "_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL);
+
+    res = gtk_dialog_run(GTK_DIALOG(dialog));
+    if (res == GTK_RESPONSE_ACCEPT) {
+        char *filename;
+        GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog);
+        filename = gtk_file_chooser_get_filename(chooser);
+
+        FILE *file = fopen(filename, "r");
+        if (file != NULL) {
+            char line[256];
+            while (fgets(line, sizeof(line), file) != NULL) {
+                g_print("%s", line);
+
+                //haz lu tuyo amiguito :)
+            }
+            fclose(file);
+            gtk_label_set_text (archivoLabel, "Archivo Cargado");
+            gtk_widget_set_name(archivoLabel, "verde");
+        } else {
+            g_print("Error opening the file\n");
+        }
+
+        g_free(filename);
+    }
+
+    gtk_widget_destroy(dialog);
+}
+
+
 int main(int argc, char *argv[]){
     GtkBuilder *builder; //GTK builder
     gtk_init(&argc, &argv); //start gtk
@@ -788,6 +828,8 @@ int main(int argc, char *argv[]){
     semillaEntry = GTK_WIDGET(gtk_builder_get_object(builder, "semilla_entry")); 
 
     //label
+
+    archivoLabel = GTK_WIDGET(gtk_builder_get_object(builder, "estado_archivo")); 
     //estadisticas opt
     processOPT = GTK_WIDGET(gtk_builder_get_object(builder, "cant_processes_opt")); 
     timeOPT = GTK_WIDGET(gtk_builder_get_object(builder, "time_opt")); 
@@ -824,7 +866,6 @@ int main(int argc, char *argv[]){
 	scCheck = GTK_WIDGET(gtk_builder_get_object(builder, "sc_check"));
     mruCheck = GTK_WIDGET(gtk_builder_get_object(builder, "mru_check"));
     rndCheck = GTK_WIDGET(gtk_builder_get_object(builder, "rnd_check"));
-
     
     //GRIDS
     selectAlgorithmTable = GTK_GRID(gtk_builder_get_object(builder, "select_algorithm"));
@@ -849,6 +890,7 @@ int main(int argc, char *argv[]){
 
     g_signal_connect( iniciarSimulacionButton, "clicked", G_CALLBACK(init_simulacion), NULL );
 
+    g_signal_connect(cargarButton, "clicked", G_CALLBACK(on_file_chooser_button_clicked), (gpointer)windowMenu);
 
     gtk_builder_connect_signals(builder, NULL);
     
@@ -864,49 +906,3 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
-
-
-//PARA MANEJO DE ARCHIVOS; por definir
-/*void cargar_estado(){
-	char *filename;
-    filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(FileChooserWindow));
-    FILE * fp;
-    char * line = NULL;
-    size_t len = 0;
-    ssize_t read;
-    fp = fopen(filename, "r");
-    if (fp == NULL){
-        exit(EXIT_FAILURE);
-	}
-	int n = -1;
-    while ((read = getline(&line, &len, fp)) != -1) {
-		char*arrays = strtok(line, " ");
-		int j = 0;
-		while (arrays != NULL){
-			if(n==-1){
-			    games = atoi(arrays);
-    			probGanarCasa = s_to_f(strtok(NULL, " "));
-                probGanarVisita = s_to_f(strtok(NULL, " "));
-				break;
-			}
-			juegoEnCasa[j+1] = atoi(arrays);
-			arrays = strtok(NULL, " ");
-			j++;
-		}
-		n++;
-    }
-	cargar();
-    fclose(fp);
-    if(line){
-        free(line);
-	}
-	gtk_widget_set_visible(FileChooserWindow, false);
-}
-
-void open_fileChooser(GtkWidget* widget, gpointer data)
-{
-	filter = gtk_file_filter_new();
-    gtk_file_filter_add_pattern(filter, "*.std");
-    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(FileChooserWindow), filter);
-    gtk_dialog_run (GTK_DIALOG (FileChooserWindow));
-}*/

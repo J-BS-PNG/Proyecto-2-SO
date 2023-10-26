@@ -77,11 +77,9 @@ label#next_label{
     background: #26DE23; /* Fondo verde */
     color: #ffffff; /* Texto blanco */
     border: 1px solid #000000; /* Borde verde */
-    border-radius: 5px; /* Bordes redondeados */
     padding: 10px 20px; /* Espaciado interno */
     font-family: "Arial, sans-serif";
     font-size: 16px; /* Tamaño del texto */
-    text-shadow: 2px 2px 2px #000000;
     border: 2px solid #000000; /* Contorno de texto */
 }
 
