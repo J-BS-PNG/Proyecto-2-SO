@@ -2599,8 +2599,8 @@
             <property name="can-focus">False</property>
             <property name="homogeneous">True</property>
             <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">PAUSAR</property>
+              <object class="GtkButton" id="pausar_simulation">
+                <property name="label" translatable="yes">Pausar</property>
                 <property name="name">smallButton</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
@@ -2613,8 +2613,8 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">CONTINUAR</property>
+              <object class="GtkButton" id="continuar_simulation">
+                <property name="label" translatable="yes">Continuar</property>
                 <property name="name">smallButton</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
@@ -2624,20 +2624,6 @@
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">DETENER</property>
-                <property name="name">smallButton</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
               </packing>
             </child>
           </object>

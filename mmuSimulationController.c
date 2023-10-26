@@ -40,10 +40,14 @@ int numOperaciones;
 int algoritmoSeleccionado;
 int semilla;
 
+int n = 0;
+
 //widgets de la simulacion
 GtkWidget* windowSimulacion;
 
 GtkWidget* pausarSimulacionButton;
+GtkWidget* reanudarSimulacionButton;
+GtkWidget* detenerSimulacionButton;
 
 GtkWidget* optRam;
 GtkWidget* algRam;
@@ -512,6 +516,9 @@ void actualizarEstadisticas(){
     contarPaginas();
 }
 //Back
+pthread_mutex_t mutex;
+pthread_cond_t cond;
+int pausado = 0;
 
 void *prueba5(void *data){
     FILE *archivo;
@@ -579,6 +586,13 @@ void *prueba5(void *data){
     
     archivo = fopen(nombreArchivo, "r");
     while(fgets(linea, sizeof(linea),archivo) != NULL){
+
+        pthread_mutex_lock(&mutex);
+        while (pausado) {
+            // Espera hasta que se reanude
+            pthread_cond_wait(&cond, &mutex);
+        }
+        pthread_mutex_unlock(&mutex);
         
         status = regexec(&regexNew, linea, 0, NULL, 0);
         if (status == 0) {
@@ -812,6 +826,19 @@ void on_file_chooser_button_clicked(GtkWidget *button, gpointer window) {
 }
 
 
+void pausa_callback(GtkWidget *widget, gpointer data) {
+    pthread_mutex_lock(&mutex);
+    pausado = 1;
+    pthread_mutex_unlock(&mutex);
+}
+
+void reanudar_callback(GtkWidget *widget, gpointer data) {
+    pthread_mutex_lock(&mutex);
+    pausado = 0;
+    pthread_cond_signal(&cond); 
+    pthread_mutex_unlock(&mutex);
+}
+
 int main(int argc, char *argv[]){
     GtkBuilder *builder; //GTK builder
     gtk_init(&argc, &argv); //start gtk
@@ -861,6 +888,10 @@ int main(int argc, char *argv[]){
 	operationSpinButton = GTK_WIDGET(gtk_builder_get_object(builder, "num_operaciones"));
     cargarButton = GTK_WIDGET(gtk_builder_get_object(builder, "cargar_archivo_menu"));
     iniciarSimulacionButton = GTK_WIDGET(gtk_builder_get_object(builder, "init"));
+    
+    pausarSimulacionButton = GTK_WIDGET(gtk_builder_get_object(builder, "pausar_simulation"));
+    reanudarSimulacionButton = GTK_WIDGET(gtk_builder_get_object(builder, "continuar_simulation"));
+    detenerSimulacionButton = GTK_WIDGET(gtk_builder_get_object(builder, "detener_simulation"));
 
     fifoCheck = GTK_WIDGET(gtk_builder_get_object(builder, "fifo_check")); 
 	scCheck = GTK_WIDGET(gtk_builder_get_object(builder, "sc_check"));
@@ -889,8 +920,13 @@ int main(int argc, char *argv[]){
     g_signal_connect(semillaEntry, "changed", G_CALLBACK(actualizarSemilla), NULL);
 
     g_signal_connect( iniciarSimulacionButton, "clicked", G_CALLBACK(init_simulacion), NULL );
+    
+    g_signal_connect( pausarSimulacionButton, "clicked", G_CALLBACK(pausa_callback), NULL );
+    g_signal_connect( reanudarSimulacionButton, "clicked", G_CALLBACK(reanudar_callback), NULL );
+
 
     g_signal_connect(cargarButton, "clicked", G_CALLBACK(on_file_chooser_button_clicked), (gpointer)windowMenu);
+
 
     gtk_builder_connect_signals(builder, NULL);
     
@@ -898,6 +934,7 @@ int main(int argc, char *argv[]){
     g_object_unref(builder);
     
     g_signal_connect(windowMenu, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+    g_signal_connect(windowSimulacion, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
     gtk_widget_show_all(windowMenu); //show window
     //gtk_widget_show_all(windowSimulacion); 
