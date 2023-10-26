@@ -210,7 +210,6 @@ void algoritmoSC2(int pagina, int ptr){
             bucleSC = 0;
         }
     }
-    printf("Pagina a reemplazar: %d\n", paginaCambio);
     int numeroProceso = getProcessElementPtr(&tablaPunteros, ptr);
     replacePageOPT(&tablaPaginasAlg, &RamAlg, &HDD2, paginaCambio, pagina, numeroProceso);
     enqueue(colaPaginas, pagina);
