@@ -49,6 +49,9 @@ GtkWidget* pausarSimulacionButton;
 GtkWidget* reanudarSimulacionButton;
 GtkWidget* detenerSimulacionButton;
 
+GtkWidget* labelRamAlg;
+GtkWidget* labelMMUAlg;
+
 GtkWidget* optRam;
 GtkWidget* algRam;
 
@@ -772,12 +775,20 @@ void selectAlgorithm(GtkWidget *widget, gpointer data) {
     // Almacenar el valor correspondiente
     if (fifoChecked) {
         algoritmoSeleccionado = 1;
+        gtk_label_set_text (labelRamAlg, "RAM - FIFO");
+        gtk_label_set_text (labelMMUAlg, "MMU - FIFO");
     } else if (scChecked) {
         algoritmoSeleccionado = 2;
+        gtk_label_set_text (labelRamAlg, "RAM - SECOND CHANCE");
+        gtk_label_set_text (labelMMUAlg, "MMU - SECOND CHANCE");
     } else if (mruChecked) {
         algoritmoSeleccionado = 3;
+        gtk_label_set_text (labelRamAlg, "RAM - MRU");
+        gtk_label_set_text (labelMMUAlg, "MMU - MRU");
     } else if (rndChecked) {
         algoritmoSeleccionado = 4;
+        gtk_label_set_text (labelRamAlg, "RAM - RANDOM");
+        gtk_label_set_text (labelMMUAlg, "MMU - RANDOM");
     }
 
 
@@ -875,6 +886,9 @@ int main(int argc, char *argv[]){
     //label
 
     archivoLabel = GTK_WIDGET(gtk_builder_get_object(builder, "estado_archivo")); 
+
+    labelRamAlg = GTK_WIDGET(gtk_builder_get_object(builder, "label_ram_alg")); 
+    labelMMUAlg = GTK_WIDGET(gtk_builder_get_object(builder, "label_mmu_alg")); 
     //estadisticas opt
     processOPT = GTK_WIDGET(gtk_builder_get_object(builder, "cant_processes_opt")); 
     timeOPT = GTK_WIDGET(gtk_builder_get_object(builder, "time_opt")); 
