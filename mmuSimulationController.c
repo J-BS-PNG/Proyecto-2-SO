@@ -446,9 +446,10 @@ gboolean createTableOpt(gpointer data){
             gtk_grid_attach(GTK_GRID(optTable), labelLoaded, 2, i, 1, 1);
             
             //Columna L-ADDR
-            sprintf(buffer, "%d", tablaPaginasOPT.data[i][1]);
+            sprintf(buffer, "%d", tablaPaginasAlg.data[i][1]);
             GtkWidget *labelL_ADDR = gtk_label_new(buffer);
             set_widget_color(labelL_ADDR, "neutro", hexColor);
+            gtk_widget_set_name(labelL_ADDR, "neutro");
             gtk_grid_attach(GTK_GRID(optTable), labelL_ADDR, 3, i, 1, 1);
 
             //Columna M-ADDR
