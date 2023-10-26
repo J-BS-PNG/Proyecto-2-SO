@@ -418,11 +418,11 @@
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <child>
-                          <object class="GtkBox" id="ram_opt">
+                          <!-- n-columns=100 n-rows=1 -->
+                          <object class="GtkGrid" id="ram_opt">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="spacing">1</property>
-                            <property name="homogeneous">True</property>
+                            <property name="column-homogeneous">True</property>
                             <child>
                               <placeholder/>
                             </child>
@@ -771,11 +771,11 @@
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <child>
-                          <object class="GtkBox" id="ram_alg">
+                          <!-- n-columns=100 n-rows=1 -->
+                          <object class="GtkGrid" id="ram_alg">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="spacing">1</property>
-                            <property name="homogeneous">True</property>
+                            <property name="column-homogeneous">True</property>
                             <child>
                               <placeholder/>
                             </child>
@@ -1993,8 +1993,8 @@
                                     <property name="orientation">vertical</property>
                                     <property name="homogeneous">True</property>
                                     <child>
-                                      <object class="GtkLabel">
-                                        <property name="name">rojo</property>
+                                      <object class="GtkLabel" id="trashing_opt">
+                                        <property name="name">neutro</property>
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">Thrashing</property>
@@ -2015,7 +2015,7 @@
                                         <property name="homogeneous">True</property>
                                         <child>
                                           <object class="GtkLabel" id="trash_izq_opt">
-                                            <property name="name">rojo</property>
+                                            <property name="name">neutro</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="label" translatable="yes">label</property>
@@ -2031,7 +2031,7 @@
                                         </child>
                                         <child>
                                           <object class="GtkLabel" id="trash_der_opt">
-                                            <property name="name">rojo</property>
+                                            <property name="name">neutro</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="label" translatable="yes">label</property>
@@ -2452,8 +2452,8 @@
                                     <property name="orientation">vertical</property>
                                     <property name="homogeneous">True</property>
                                     <child>
-                                      <object class="GtkLabel">
-                                        <property name="name">rojo</property>
+                                      <object class="GtkLabel" id="trashing_alg">
+                                        <property name="name">neutro</property>
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="label" translatable="yes">Thrashing</property>
@@ -2474,7 +2474,7 @@
                                         <property name="homogeneous">True</property>
                                         <child>
                                           <object class="GtkLabel" id="trash_izq_alg">
-                                            <property name="name">rojo</property>
+                                            <property name="name">neutro</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="label" translatable="yes">label</property>
@@ -2490,7 +2490,7 @@
                                         </child>
                                         <child>
                                           <object class="GtkLabel" id="trash_der_alg">
-                                            <property name="name">rojo</property>
+                                            <property name="name">neutro</property>
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <property name="label" translatable="yes">label</property>

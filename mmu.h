@@ -19,6 +19,7 @@
 
 struct RAM RamOPT; // Algoritmo opt
 struct RAM RamAlg; // algoritmo FIFO, Second chance, MRU y RDN
+//
 
 struct Virtual HDD1;//memoria virtual
 struct Virtual HDD2; //memoria virtual
