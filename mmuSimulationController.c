@@ -109,6 +109,9 @@ void estadisticasAlg(){
     sprintf(loadedAlgText, "%d", paginasCargadaAlg);
     sprintf(unloadedAlgText, "%d", paginasFueraAlg);
     sprintf(trashIAlgText, "%d", trashingAlg);
+    sprintf(trashDAlgText, "%d", porcentajeTrashingAlg);
+    sprintf(fragAlgText, "%d", fragmentacionInternaAlg);
+
 
     printf(processAlgText);
 
@@ -121,6 +124,8 @@ void estadisticasAlg(){
     gtk_label_set_text(GTK_LABEL(loadedALG), loadedAlgText);
     gtk_label_set_text(GTK_LABEL(unloadedALG), unloadedAlgText);
     gtk_label_set_text(GTK_LABEL(tarshIALG), trashIAlgText);
+    gtk_label_set_text(GTK_LABEL(trashDALG), trashDAlgText);
+    gtk_label_set_text(GTK_LABEL(fragALG), fragAlgText);
     
     
 }
@@ -148,6 +153,8 @@ void estadisticasOpt(){
     sprintf(loadedOptText, "%d", paginasCargadaOPT);
     sprintf(unloadedOptText, "%d", paginasFueraOPT);
     sprintf(trashIOptText, "%d", trashingOpt);
+    sprintf(trashDOptText, "%d", porcentajeTrashingOpt);
+    sprintf(fragOptText, "%d", fragmentacionInternaOPT);
 
     gtk_label_set_text(GTK_LABEL(processOPT), processOptText);
     gtk_label_set_text(GTK_LABEL(timeOPT), timeOptText);
@@ -158,6 +165,8 @@ void estadisticasOpt(){
     gtk_label_set_text(GTK_LABEL(loadedOPT), loadedOptText);
     gtk_label_set_text(GTK_LABEL(unloadedOPT), unloadedOptText);
     gtk_label_set_text(GTK_LABEL(tarshIOPT), trashIOptText);
+    gtk_label_set_text(GTK_LABEL(trashDOPT), trashDOptText);
+    gtk_label_set_text(GTK_LABEL(fragOPT), fragOptText);
     
 
 }
