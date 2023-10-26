@@ -70,7 +70,7 @@ GtkWidget* unloadedOPT;
 GtkWidget* tarshIOPT;
 GtkWidget* trashDOPT;
 GtkWidget* fragOPT;
-
+GtkWidget* trashTitleALG;
 //ESTADISTICA ALGORITMO
 GtkWidget* processALG;
 GtkWidget* timeALG;
@@ -80,6 +80,7 @@ GtkWidget* VRamALG;
 GtkWidget* vRamPALG;
 GtkWidget* loadedALG;
 GtkWidget* unloadedALG;
+GtkWidget* trashTitleOPT;
 GtkWidget* tarshIALG;
 GtkWidget* trashDALG;
 GtkWidget* fragALG;
@@ -591,15 +592,25 @@ void actualizarEstadisticas(){
         porcentajeTrashingAlg = ((double)trashingAlg/tiempoAlg)*100; // porcentaje de trashing de los demas algoritmos
         porcentajeTrashingOpt = ((double)trashingOpt/tiempoOPT)*100; // porcentaje de trashing de OPT
 
-        if(porcentajeTrashingAlg > 50){
+        if(porcentajeTrashingAlg >= 50){
             gtk_widget_set_name(tarshIALG, "rojo");
             gtk_widget_set_name(trashDALG, "rojo");
+            gtk_widget_set_name(trashTitleALG, "rojo");
+        } else{
+            gtk_widget_set_name(tarshIALG, "neutro");
+            gtk_widget_set_name(trashDALG, "neutro");
+            gtk_widget_set_name(trashTitleALG, "neutro");
         }
 
-        if(porcentajeTrashingOpt > 50){
+        if(porcentajeTrashingOpt >= 50){
             gtk_widget_set_name(tarshIOPT, "rojo");
             gtk_widget_set_name(trashDOPT, "rojo");
+            gtk_widget_set_name(trashTitleOPT, "rojo");
 
+        }else{
+            gtk_widget_set_name(tarshIOPT, "neutro");
+            gtk_widget_set_name(trashDOPT, "neutro");
+            gtk_widget_set_name(trashTitleOPT, "neutro");
         }
     }
 
@@ -972,6 +983,9 @@ int main(int argc, char *argv[]){
 
     labelRamAlg = GTK_WIDGET(gtk_builder_get_object(builder, "label_ram_alg")); 
     labelMMUAlg = GTK_WIDGET(gtk_builder_get_object(builder, "label_mmu_alg")); 
+    
+    trashTitleOPT = GTK_WIDGET(gtk_builder_get_object(builder, "trashing_opt")); 
+    trashTitleALG = GTK_WIDGET(gtk_builder_get_object(builder, "trashing_alg")); 
     //estadisticas opt
     processOPT = GTK_WIDGET(gtk_builder_get_object(builder, "cant_processes_opt")); 
     timeOPT = GTK_WIDGET(gtk_builder_get_object(builder, "time_opt")); 
