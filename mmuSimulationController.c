@@ -521,8 +521,13 @@ void actualizarEstadisticas(){
     
     porcentajeVirtualOPT = ((double)virtualKBOPT/RamOPT.capacidad)*100; // porcentaje de la memoria virtual OPT
     porcentajeVirtualAlg = ((double)virtualKBAlg/RamAlg.capacidad)*100; // porcentaje de la memoria virtual de los demas algoritmos
-    
+    if(tiempoAlg != 0 ){
+        porcentajeTrashingAlg = ((double)trashingAlg/tiempoAlg)*100; // porcentaje de trashing de los demas algoritmos
+        porcentajeTrashingOpt = ((double)trashingOpt/tiempoOPT)*100; // porcentaje de trashing de OPT
+    }
+
     contarPaginas();
+    contarFragmentacion();
 }
 //Back
 pthread_mutex_t mutex;
@@ -567,8 +572,8 @@ void *prueba5(void *data){
 
     char linea[100];
     printf("Se encontraron las siguientes operaciones:\n");
-    inicializarRAM(&RamOPT, 20);
-    inicializarRAM(&RamAlg, 20);
+    inicializarRAM(&RamOPT, 100);
+    inicializarRAM(&RamAlg, 100);
     int numeroProcesos = 10;
     inicializarLista(&listaProcesos, numeroProcesos); // Inicializar lista de procesos
     tablaPunteros = createMatrix(numeroProcesos, 3); // crear tabla de punteros
@@ -578,6 +583,10 @@ void *prueba5(void *data){
     inicializarVirtual(&HDD2, 4); // Memoria virtual para los demas algoritmos
     inicializarLista(&futuroOPT, 10); // lista a futuro de procesos
     
+    if(algoritmoSeleccionado == 1 || algoritmoSeleccionado == 2){
+        colaPaginas = createQueue(10);
+    }
+
     while(fgets(linea, sizeof(linea),archivo) != NULL){
         status = regexec(&regexUse, linea, 0, NULL, 0);
         if (status == 0) {

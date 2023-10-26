@@ -11,6 +11,7 @@
 #include "util.h"
 #include "sram.h"
 #include "svirtual.h"
+#include "queue.h"
 
 #define TAMANNORAM 4000 
 
@@ -32,7 +33,7 @@ struct Matrix tablaPaginasAlg; // tabla de pagina, puntero, esta en memeoria, Di
 
 struct Lista futuroOPT; // lista de procesos
 
-int algoritmoSeleccionado = 2;
+int algoritmoSeleccionado = 4;
 
 // Estadissticas  
 int tiempoOPT = 0;
@@ -114,8 +115,6 @@ int ocupaEspacio(int tamanno){
 //AlgoritmoOPT(numPagina, 0, ptr, &paginasUsadas);
 //entradas: numero de pagina, opcion, ptr, lista de paginas usadas
 void AlgoritmoOPT(int pagina, int operacion, int ptr, struct Lista *paginasUsadas){
-
-
     struct Lista auxPaginas;
     struct Lista opcionCambiar;
     struct Lista seUso;
@@ -128,16 +127,15 @@ void AlgoritmoOPT(int pagina, int operacion, int ptr, struct Lista *paginasUsada
             agregarElemento(&auxPaginas, RamOPT.datos2[i]);
         }
     }
+
     agregarElemento(paginasUsadas, pagina);
     int ptrLimite = tablaPunteros.amount-1;
     if(operacion == 1) ptrLimite = tablaPunteros.amount;
     
-    // // printf("ptr limite: %d\n", ptrLimite);
-    // imprimirLista(&auxPaginas);
-    // printf("Tabla de paginas\n");
+    
     for(int i = 0; i < futuroOPT.longitud; i++){
         if(obtenerIndice(&seUso, futuroOPT.datos[i]) == -1 && futuroOPT.datos[i] < ptrLimite){
-            // printf("Se uso la puntero: %d\n", futuroOPT.datos[i]);
+            
             getPageElementOPT(&tablaPaginasOPT, &auxPaginas, &opcionCambiar, futuroOPT.datos[i]);
             agregarElemento(&seUso, futuroOPT.datos[i]);
         }
@@ -147,26 +145,26 @@ void AlgoritmoOPT(int pagina, int operacion, int ptr, struct Lista *paginasUsada
     }
     //obtiene el proceso 
     int numeroProceso = getProcessElementPtr(&tablaPunteros, ptr);
-    // printf("Longitud de aux: %d\n", auxPaginas.longitud);
+    
     if(auxPaginas.longitud > 0){
         replacePageOPT(&tablaPaginasOPT, &RamOPT, &HDD1, auxPaginas.datos[auxPaginas.longitud-1], pagina, numeroProceso);
     }else{
         replacePageOPT(&tablaPaginasOPT, &RamOPT, &HDD1, opcionCambiar.datos[opcionCambiar.longitud-1], pagina, numeroProceso);
     }
 
-    
-    //Ya con el procesos listo si auxPagina esta Vacia se usa la opcionCambiar
-    // printf("Paginas se cambiar primero si hay\n");
-    // imprimirLista(&auxPaginas);
-    // printf("Paginas a cambiar segundo si primero esta vacio\n");
-    // imprimirLista(&opcionCambiar);
-    // printf("Paginas en RAM\n");
-    // imprimirLista(&auxPaginas);
-    // imprimirVirtual(&HDD1);
     liberarLista(&auxPaginas);
     liberarLista(&opcionCambiar);
 }
 
+struct Queue *colaPaginas;
+void algoritmoFIFO2(int pagina, int ptr){
+    int paginaCambio = dequeue(colaPaginas);
+    int numeroProceso = getProcessElementPtr(&tablaPunteros, ptr);
+    replacePageOPT(&tablaPaginasAlg, &RamAlg, &HDD2, paginaCambio, pagina, numeroProceso);
+    enqueue(colaPaginas, pagina);
+} 
+
+// Primera version del FIFO que busca el primero que entra por el tiempo 
 void algoritmoFIFO(int pagina, int ptr){
     //obtiene el proceso que se va a escoger de la RAM
     int tiempo = tablaPaginasAlg.data[tablaPaginasAlg.size-1][4];
@@ -185,6 +183,37 @@ void algoritmoFIFO(int pagina, int ptr){
     //obtiene el proceso de la pagina que se va a cambiar
     int numeroProceso = getProcessElementPtr(&tablaPunteros, ptr);
     replacePageOPT(&tablaPaginasAlg, &RamAlg, &HDD2, paginaCambio, pagina, numeroProceso);
+} 
+
+int verificarCambioSC(int paginaSC){
+    if(tablaPaginasAlg.size == 0) return -1;
+    for(int i = 0; i < tablaPaginasAlg.size; i++){
+        if(tablaPaginasAlg.data[i][2] == 1  && tablaPaginasAlg.data[i][5] == 1 && tablaPaginasAlg.data[i][0] == paginaSC){
+            tablaPaginasAlg.data[i][5] = 0;
+            return 1;
+        }
+        if(tablaPaginasAlg.data[i][2] == 1  && tablaPaginasAlg.data[i][5] == 0 && tablaPaginasAlg.data[i][0] == paginaSC){
+            return 0;
+        }
+    }
+    return -1;
+}
+
+void algoritmoSC2(int pagina, int ptr){
+    int paginaCambio = 0;
+    int bucleSC = 1;
+    while(bucleSC){
+        paginaCambio = dequeue(colaPaginas);
+        if(verificarCambioSC(paginaCambio) == 1){
+            enqueue(colaPaginas, paginaCambio);
+        }else{
+            bucleSC = 0;
+        }
+    }
+    printf("Pagina a reemplazar: %d\n", paginaCambio);
+    int numeroProceso = getProcessElementPtr(&tablaPunteros, ptr);
+    replacePageOPT(&tablaPaginasAlg, &RamAlg, &HDD2, paginaCambio, pagina, numeroProceso);
+    enqueue(colaPaginas, pagina);
 } 
 
 int poscionSC = 0;
@@ -235,8 +264,6 @@ void algoritmoMRU(int pagina, int ptr){
 }
 
 void AlgoritmoRamdon(int pagina, int ptr, struct Lista *paginasUsadas){
-
-
     struct Lista auxPaginas;
     //struct Lista ordePAginas;
     inicializarLista(&auxPaginas, 10);
@@ -250,7 +277,7 @@ void AlgoritmoRamdon(int pagina, int ptr, struct Lista *paginasUsadas){
     // se obtiene una pagina random
     int paginaRadom = obtenerElemento(&auxPaginas, rand()%auxPaginas.longitud);
 
-    printf("Pagina a reemplazar: %d\t pagina entrada: %d\n", paginaRadom, pagina);
+    // printf("Pagina a reemplazar: %d\t pagina entrada: %d\n", paginaRadom, pagina);
     //obtiene el proceso 
     int numeroProceso = getProcessElementPtr(&tablaPunteros, ptr);
     replacePageOPT(&tablaPaginasAlg, &RamAlg, &HDD2, paginaRadom, pagina, numeroProceso);
@@ -263,10 +290,10 @@ void algoritmoRemplazoUsar(int opcion, int pagina, int ptr, struct Lista *pagina
     switch(opcion){
         case 1:
             //FIFO
-            algoritmoFIFO(pagina, ptr);
+            algoritmoFIFO2(pagina, ptr);
             break;
         case 2:
-            algoritmoSC(pagina, ptr);
+            algoritmoSC2(pagina, ptr);
             //Second chance
             break;
         case 3:
@@ -305,7 +332,8 @@ void operacionNew(const char *cadena){
     int ptr = tablaPunteros.amount-1;
     int ocupa = ocupaEspacio(tamanno);
     int  ocupa2 = ocupaEspacio(tamanno);
-    // LLenar RAM 
+
+    // LLenar RAM del algo OPT
     while(ocupa > 0){
         if(RamOPT.cantidadDatos == 0) break; 
         // Se llena la ram que usa el algoritmo OPT
@@ -333,13 +361,18 @@ void operacionNew(const char *cadena){
     }
     int bit = 0;
     if(algoritmoSeleccionado == 2 || algoritmoSeleccionado == 3) bit = 1; 
-    // LLenar RAM
+    
+    // LLenar RAM por parte dee los demas algoritmos
     while(ocupa2 > 0){
         if(RamAlg.cantidadDatos == 0) break; 
         // Se llena la ram que usa n los demas algoritmos
         int dirMemoria = agregarElementoRAM(&RamAlg, proceso, tablaPaginasAlg.amount);
-        // Esta linea pasa si se hace el algoritmo de MRU
+        
+        // Esta linea pasa si se hace el algoritmo de MRU, para borrar en el que tenia el bit marcado
         if(algoritmoSeleccionado == 3) borrarBitMRU();
+        
+        //Se empieza a llenar la lista con las paginas como van entrando
+        if(algoritmoSeleccionado == 1 || algoritmoSeleccionado == 2) enqueue(colaPaginas, tablaPaginasAlg.amount);
         appendElementPagina(&tablaPaginasAlg, ptr, 1, dirMemoria, tiempoAlg, bit);
         tiempoAlg++;
         ocupa2--;
@@ -390,11 +423,17 @@ void verificacionRam(struct Matrix *auxPaginas, int ptr, int opcion){
                 if (algoritmoSeleccionado == 2 && auxPaginas->data[i][5] == 0 && opcion != 0){
                     auxPaginas->data[i][5] = 1;
                 }else if(algoritmoSeleccionado == 3 && opcion != 0){
+                    // Se setea el bit de MRU
                     borrarBitMRU();
                     auxPaginas->data[i][5] = 1;
                 }
-                if(opcion == 0) tiempoOPT++;
-                else tiempoAlg++;
+
+                
+                if(opcion == 0){
+                    // entra si es el algoritmo opt
+                    tiempoOPT++;
+                    agregarElemento(&paginasUsadas, auxPaginas->data[i][0]);
+                } else tiempoAlg++;
                 // tiempo++;
             }else{
                 // printf("miss\n");
@@ -417,7 +456,6 @@ void verificacionRam(struct Matrix *auxPaginas, int ptr, int opcion){
                     tiempoOPT+=5;
                     trashingOpt+=5;
                 }else{
-                    // printMatrix(&tablaPaginasAlg);
                     // Demas algoritmos
                     if(RamAlg.cantidadDatos > 0) {
                         int numeroProceso = getProcessElementPtr(&tablaPunteros, ptr);
@@ -427,6 +465,11 @@ void verificacionRam(struct Matrix *auxPaginas, int ptr, int opcion){
                         auxPaginas->data[i][2] = 1;
                         auxPaginas->data[i][3] = dirMemoria;
                         auxPaginas->data[i][4] = tiempoAlg;
+
+                        if(algoritmoSeleccionado == 1 || algoritmoSeleccionado == 2){
+                            //Se empieza a llenar la lista con las paginas como van entrando
+                            enqueue(colaPaginas, auxPaginas->data[i][0]);
+                        } 
                     }else{
                         printf("Numero a reemplazar: %d\n", auxPaginas->data[i][0]);
                         auxPaginas->data[i][4] = tiempoAlg;
@@ -465,10 +508,13 @@ void operacionUse(const char *cadena){
 }
 
 void borrarPagina(int ptr){
-    tablaPaginasOPT = deleteElementPage(&tablaPaginasOPT, &RamOPT, &HDD1, ptr, 0);
+    tablaPaginasOPT = deleteElementPage(&tablaPaginasOPT, &RamOPT, &HDD1, NULL, ptr, 0);
     int cantidadPagBorradas = 0;
+    
     if(algoritmoSeleccionado == 2) cantidadPagBorradas = tablaPaginasAlg.size;
-    tablaPaginasAlg = deleteElementPage(&tablaPaginasAlg, &RamAlg, &HDD2, ptr, algoritmoSeleccionado);
+    
+    tablaPaginasAlg = deleteElementPage(&tablaPaginasAlg, &RamAlg, &HDD2, colaPaginas, ptr, algoritmoSeleccionado);
+    
     if(algoritmoSeleccionado == 2) {
         cantidadPagBorradas -= tablaPaginasAlg.size;
         poscionSC -= cantidadPagBorradas;

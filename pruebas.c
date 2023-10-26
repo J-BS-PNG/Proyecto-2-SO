@@ -557,8 +557,8 @@ int prueba5(){
 
     char linea[100];
     printf("Se encontraron las siguientes operaciones:\n");
-    inicializarRAM(&RamOPT, 100);
-    inicializarRAM(&RamAlg, 100);
+    inicializarRAM(&RamOPT, 20);
+    inicializarRAM(&RamAlg, 20);
     int numeroProcesos = 10;
     inicializarLista(&listaProcesos, numeroProcesos); // Inicializar lista de procesos
     tablaPunteros = createMatrix(numeroProcesos, 3); // crear tabla de punteros
@@ -567,6 +567,10 @@ int prueba5(){
     inicializarVirtual(&HDD1, 4); // Memoria virtual para el OPT
     inicializarVirtual(&HDD2, 4); // Memoria virtual para los demas algoritmos
     inicializarLista(&futuroOPT, 10); // lista a futuro de procesos
+
+    if(algoritmoSeleccionado == 1 || algoritmoSeleccionado == 2){
+        colaPaginas = createQueue(10);
+    }
     
     while(fgets(linea, sizeof(linea),archivo) != NULL){
         status = regexec(&regexUse, linea, 0, NULL, 0);
@@ -597,18 +601,18 @@ int prueba5(){
         }
         contarPaginas();
         contarFragmentacion();
-        // printf("Procesos: %d\n", procesos);
-        // printf("Tiempo opt: %d\n", tiempoOPT);
-        // printf("Ram KB opt: %d\n", ramKBOPT);
-        // printf("RAM %% %d\n", porcentajeOPT);
-        // printf("V-RAM KB: %d\n", virtualKBOPT);
-        // printf("V-RAM %%: %d\n", porcentajeVirtualOPT);
-        // printf("Paginas Cargadas: %d\n", paginasCargadaOPT);
-        // printf("Paginas fuera: %d\n", paginasFueraOPT);
-        // printf("Trashing opt: %d\n", trashingOpt);
-        // printf("Porcentaje trashing opt: %d\n", porcentajeTrashingOpt);
-        // printf("Fragmentacion opt: %d\n", fragmentacionInternaOPT);
-        // printf("----------------------------------------\n");
+        printf("Procesos: %d\n", procesos);
+        printf("Tiempo opt: %d\n", tiempoOPT);
+        printf("Ram KB opt: %d\n", ramKBOPT);
+        printf("RAM %% %d\n", porcentajeOPT);
+        printf("V-RAM KB: %d\n", virtualKBOPT);
+        printf("V-RAM %%: %d\n", porcentajeVirtualOPT);
+        printf("Paginas Cargadas: %d\n", paginasCargadaOPT);
+        printf("Paginas fuera: %d\n", paginasFueraOPT);
+        printf("Trashing opt: %d\n", trashingOpt);
+        printf("Porcentaje trashing opt: %d\n", porcentajeTrashingOpt);
+        printf("Fragmentacion opt: %d\n", fragmentacionInternaOPT);
+        printf("----------------------------------------\n");
         printf("Procesos: %d\n", procesos);
         printf("Tiempo alg: %d\n", tiempoAlg);
         printf("Ram KB alg: %d\n", ramKBAlg);
@@ -645,10 +649,11 @@ int prueba5(){
             printf("%s", linea); // se hace operacion
             operacionKill(linea); 
         }
-
+        // printQueue(colaPaginas);
         sleep(1);
         // printf("Lista de procesosos a Futuro :");
         // imprimirLista(&futuroOPT);
+        // printf("Ram de los OPT\n");
         // imprimirRAMPaginas(&RamOPT);
         // imprimirVirtual(&HDD1);
         // printf("Ram de los algoritmos\n");

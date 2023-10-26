@@ -5,6 +5,7 @@
 #include "sram.h"
 #include "svirtual.h"
 #include "listA.h"
+#include "queue.h"
 
 struct Matrix {
     int **data;     // Puntero a los datos de la matriz
@@ -294,7 +295,7 @@ struct Matrix deleteElementProcessPtr(struct Matrix *matrix, struct Lista *lista
 }
 
 // Funcion para eliminar page con el punetro que coincida
-struct Matrix deleteElementPage(struct Matrix *matrix, struct RAM *ram, struct Virtual *virtual, int ptr, int MRU){
+struct Matrix deleteElementPage(struct Matrix *matrix, struct RAM *ram, struct Virtual *virtual, struct Queue *cola, int ptr, int algSeleccionado){
     if (matrix == NULL || matrix->size == 0) {
         // Manejo de error: matriz nula o tamaño igual a cero
         printf("Error: valor de size:%d\n", matrix->size);
@@ -310,7 +311,7 @@ struct Matrix deleteElementPage(struct Matrix *matrix, struct RAM *ram, struct V
     int posMRU = 0;
     for(int i = 0; i < matrix->size; i++){
         if(matrix->data[i][1] != ptr){
-            if(MRU == 3){
+            if(algSeleccionado == 3){
                 if(matrix->data[i][2] == 1 && matrix->data[i][4] > timeMRU){
                     timeMRU = matrix->data[i][4];
                     posMRU = i;
@@ -324,9 +325,14 @@ struct Matrix deleteElementPage(struct Matrix *matrix, struct RAM *ram, struct V
             }else{
                 eliminarElementoVirtual(virtual, matrix->data[i][3]);
             }
+            
+            // Se borran paginas que puedan existir en la cola
+            if(algSeleccionado == 1 || algSeleccionado == 2){
+                deleteFirstOccurrence(cola, matrix->data[i][0]);
+            }
         }
     }
-    if(MRU == 3) matrix->data[posMRU][5] = 1;
+    if(algSeleccionado == 3) matrix->data[posMRU][5] = 1;
     matrixAux.size = position;
     return matrixAux;
 }

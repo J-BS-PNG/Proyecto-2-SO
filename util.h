@@ -82,8 +82,8 @@ int generarRadomV2(int sizeProcess, int sizePTRMatrix, int sizeProcessKill){
 
     // Define las probabilidades para cada tipo de proceso
     double probabilidad_proceso_1 = 0.40;
-    double probabilidad_proceso_2 = 0.45;
-    double probabilidad_proceso_3 = 0.10;
+    double probabilidad_proceso_2 = 0.50;
+    double probabilidad_proceso_3 = 0.05;
     double probabilidad_proceso_4 = 0.05;
 
     if (random_number < probabilidad_proceso_1) {
