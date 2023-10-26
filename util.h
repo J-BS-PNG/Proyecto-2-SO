@@ -18,7 +18,7 @@ struct start
 {
     int seed; // Seed for random number generator
     enum algoritm option; // Algorithm to use
-    FILE *file; // File to read
+    char *file; // File to read
     int NumberProcess; // Number of processes
     int amoutOperations; // Number of operations
 };

@@ -243,7 +243,7 @@ void set_widget_color(GtkWidget *widget, const gchar *css_class, const gchar *co
 }
 
 
-void setRamAlg(){
+gboolean setRamAlg(){
     gtk_grid_remove_row(algRam, 0);
     for(int i = 0; i < RamAlg.capacidad; i++){
         GtkWidget *espacio = gtk_label_new(" ");
@@ -268,9 +268,10 @@ void setRamAlg(){
         set_widget_color(espacio, "neutro", hexColor);
         gtk_grid_attach(GTK_GRID(algRam), espacio, i, 0, 1, 1);
     }
+    return G_SOURCE_REMOVE; 
 }
 
-void setRamOpt(){
+gboolean setRamOpt(){
     gtk_grid_remove_row(optRam, 0);
     for(int i = 0; i < RamOPT.capacidad; i++){
         GtkWidget *espacio = gtk_label_new(" ");
@@ -296,6 +297,7 @@ void setRamOpt(){
         gtk_grid_attach(GTK_GRID(optRam), espacio, i, 0, 1, 1);
 
     }
+    return G_SOURCE_REMOVE; 
 }
 
 gboolean createTableAlg(gpointer data){
@@ -622,10 +624,10 @@ pthread_mutex_t mutex;
 pthread_cond_t cond;
 int pausado = 0;
 
-void *prueba5(void *data){
+gpointer prueba5(gpointer data){
     FILE *archivo;
     regex_t regexNew, regexUse, regexDelete, regexKill;
-    char *nombreArchivo = "simulation.txt";
+    printf("Ingrese el nombre del archivo: %s ", nombreArchivo);
     archivo = fopen(nombreArchivo, "r");
 
     if(archivo == NULL){
@@ -785,7 +787,8 @@ void *prueba5(void *data){
 
 void iniciarSimulacionEnHilo() {
 
-    g_thread_new(NULL, prueba5, NULL);
+    GThread *simulacionM =g_thread_new(NULL, prueba5, NULL);
+    g_thread_unref(simulacionM);
 }
 
 //css de toda la vida
@@ -892,21 +895,22 @@ void simulacion(){
     iniciarSimulacionEnHilo();
 }
 
+char *fileNameSimulacion = NULL;
 void init_simulacion(){
     // Se crea una structura que guarda los datos de la simulacion
-    struct start preparacion = crearPreparación(semilla, algoritmoSeleccionado, NULL, numProcesos, numOperaciones);
+    struct start preparacion = crearPreparación(semilla, algoritmoSeleccionado, fileNameSimulacion, numProcesos, numOperaciones);
     printf("Se ha creado el archivo de simulacion semilla: %d, option: %d, numero de proceso: %d, numero de Operaciones: %d\n", preparacion.seed, preparacion.option, preparacion.NumberProcess, preparacion.amoutOperations);
     srand(preparacion.seed); // Semilla para generar numeros aleatorios
-    struct Matrix mat = createMatrix(preparacion.NumberProcess, 2); // Se crea la matriz de los punteros y procesos
-    createSimulationTxt(preparacion.NumberProcess, preparacion.amoutOperations, &mat); // Se crea el archivo de simulacion
-    preparacion.file = fopen("simulation.txt", "r"); // Se abre el archivo de simulacion
-    if(preparacion.file == NULL){
-        printf("Error al abrir el archivo");
-        return;
+    if(preparacion.file != NULL){
+        nombreArchivo = preparacion.file;
+        printf("Se ha cargado el archivo de simulacion %s\n", nombreArchivo);
+    }else{
+        struct Matrix mat = createMatrix(preparacion.NumberProcess, 2); // Se crea la matriz de los punteros y procesos
+        createSimulationTxt(preparacion.NumberProcess, preparacion.amoutOperations, &mat); // Se crea el archivo de simulacion
+        preparacion.file = fopen("simulation.txt", "r"); // Se abre el archivo de simulacion
+        nombreArchivo = "simulation.txt";
+        freeMatrix(&mat); // Se libera la memoria de la matriz
     }
-    freeMatrix(&mat); // Se libera la memoria de la matriz
-
-    
     //se activa la ventana de simulacion
     gtk_widget_show(windowSimulacion);
     simulacion();
@@ -926,6 +930,7 @@ void on_file_chooser_button_clicked(GtkWidget *button, gpointer window) {
         char *filename;
         GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog);
         filename = gtk_file_chooser_get_filename(chooser);
+        fileNameSimulacion = gtk_file_chooser_get_filename(chooser);
 
         FILE *file = fopen(filename, "r");
         if (file != NULL) {

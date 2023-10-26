@@ -36,6 +36,8 @@ struct Lista futuroOPT; // lista de procesos
 
 int algoritmoSeleccionado = 4;
 
+char *nombreArchivo = NULL; // Nombre de txt
+
 // Estadissticas  
 int tiempoOPT = 0;
 int tiempoAlg = 0;
