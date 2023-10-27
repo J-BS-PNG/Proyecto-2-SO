@@ -627,7 +627,6 @@ int pausado = 0;
 gpointer prueba5(gpointer data){
     FILE *archivo;
     regex_t regexNew, regexUse, regexDelete, regexKill;
-    printf("Ingrese el nombre del archivo: %s ", nombreArchivo);
     archivo = fopen(nombreArchivo, "r");
 
     if(archivo == NULL){
@@ -661,7 +660,6 @@ gpointer prueba5(gpointer data){
     }
 
     char linea[100];
-    printf("Se encontraron las siguientes operaciones:\n");
     inicializarRAM(&RamOPT, 100);
     inicializarRAM(&RamAlg, 100);
     int numeroProcesos = 10;
@@ -706,7 +704,6 @@ gpointer prueba5(gpointer data){
         if (status == 0) {
             g_idle_add(limpiarTabla, NULL);
             g_idle_add(limpiarTabla2, NULL);
-            printf("%s", linea); // se hace operacion
             operacionNew(linea);
 
             g_idle_add(createTableOpt, NULL);
@@ -721,7 +718,6 @@ gpointer prueba5(gpointer data){
         if (status == 0) {
             g_idle_add(limpiarTabla, NULL);
             g_idle_add(limpiarTabla2, NULL);
-            printf("%s", linea); // se hace operacion
             operacionUse(linea);
             g_idle_add(createTableOpt, NULL);
             g_idle_add(createTableAlg, NULL);
@@ -734,7 +730,6 @@ gpointer prueba5(gpointer data){
         if (status == 0) {
             g_idle_add(limpiarTabla, NULL);
             g_idle_add(limpiarTabla2, NULL);
-            printf("%s", linea); // se hace operacion
             operacionDelete(linea);
             g_idle_add(createTableOpt, NULL);
             g_idle_add(createTableAlg, NULL);
@@ -747,7 +742,6 @@ gpointer prueba5(gpointer data){
         if (status == 0) {
             g_idle_add(limpiarTabla, NULL);
             g_idle_add(limpiarTabla2, NULL);
-            printf("%s", linea); // se hace operacion
             operacionKill(linea);
             g_idle_add(createTableOpt, NULL);
             g_idle_add(createTableAlg, NULL);
@@ -770,10 +764,6 @@ gpointer prueba5(gpointer data){
     estadisticasOpt();
 
     g_idle_add(mi_funcion_actualizar_interfaz, NULL); 
-    printf("Tiempo opt: %d\n", tiempoOPT);
-    printf("Tiempo alg: %d\n", tiempoAlg);
-    printf("Trashing opt: %d\n", trashingOpt);
-    printf("Trashing alg: %d\n", trashingAlg);
     //liberar memoria
     regfree(&regexDelete);
     regfree(&regexKill);
@@ -899,7 +889,6 @@ char *fileNameSimulacion = NULL;
 void init_simulacion(){
     // Se crea una structura que guarda los datos de la simulacion
     struct start preparacion = crearPreparación(semilla, algoritmoSeleccionado, fileNameSimulacion, numProcesos, numOperaciones);
-    printf("Se ha creado el archivo de simulacion semilla: %d, option: %d, numero de proceso: %d, numero de Operaciones: %d\n", preparacion.seed, preparacion.option, preparacion.NumberProcess, preparacion.amoutOperations);
     srand(preparacion.seed); // Semilla para generar numeros aleatorios
     if(preparacion.file != NULL){
         nombreArchivo = preparacion.file;

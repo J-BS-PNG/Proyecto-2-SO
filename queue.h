@@ -99,9 +99,9 @@ void deleteFirstOccurrence(struct Queue* queue, int elementToDelete) {
         enqueue(queue, item);
     }
 
-    if (!found) {
-        printf("El elemento %d no se encontró en la cola.\n", elementToDelete);
-    }
+    // if (!found) {
+    //     printf("El elemento %d no se encontró en la cola.\n", elementToDelete);
+    // }
 }
 
 // Función para sacar un elemento por el rear de la cola
