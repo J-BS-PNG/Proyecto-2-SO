@@ -233,7 +233,7 @@ bool isKeyInDic(int key) {
 void set_widget_color(GtkWidget *widget, const gchar *css_class, const gchar *color) {
     GtkCssProvider *provider = gtk_css_provider_new();
     gchar *css_data = g_strdup_printf("#%s { background: %s; }", css_class, color);
-    //printf("%s\n", css_data);
+
     gtk_css_provider_load_from_data(provider, css_data, -1, NULL);
     g_free(css_data);
 
@@ -310,12 +310,11 @@ gboolean createTableAlg(gpointer data){
         gtk_widget_set_name(labelPageID, "neutro");
         gtk_grid_attach(GTK_GRID(algTable), labelPageID, 0, i, 1, 1);
 
-        //REVISAR ALAMACENAMIENTO DE LA ASOCIACION DE LOS PID Y LOS COLORES
         //Columna PID
         int procesoID = getProcessElementPtr(&tablaPunteros, tablaPaginasAlg.data[i][1]);
         if(!isKeyInDic(procesoID)) {
             GdkRGBA color;
-            // Generar un color aleatorio (puedes personalizar esta lógica)
+            // Generar un color aleatorio 
             color.red = g_random_double_range(50, 256);  
             color.green = g_random_double_range(50, 256); 
             color.blue = g_random_double_range(50, 256);  
@@ -323,8 +322,6 @@ gboolean createTableAlg(gpointer data){
             addKeyValue(procesoID, color);
         }
 
-    
-        // Establecer el color de fondo de la etiqueta según el color asociado al PID
         GdkRGBA rgbaColor = getValueByKey(procesoID);
 
         //el color de fondo en formato hexadecimal
@@ -333,7 +330,7 @@ gboolean createTableAlg(gpointer data){
         int blue = (int)(rgbaColor.blue * 255);
 
 
-        gchar hexColor[8] = " "; // 9 caracteres para RGB (dos para cada componente) + terminador nulo
+        gchar hexColor[8] = " "; 
         g_snprintf(hexColor, sizeof(hexColor), "#%02X%02X%02X", red, green, blue);
 
         //printf("Proceso ID: %d, Hex Color: %s\n", procesoID, hexColor);
@@ -456,24 +453,23 @@ gboolean createTableOpt(gpointer data){
 
         if(!isKeyInDic(procesoID)) {
             GdkRGBA color;
-            // Generar un color aleatorio (puedes personalizar esta lógica)
-            color.red = g_random_double_range(50, 256);   // Rango de 50 a 255 para evitar valores bajos
-            color.green = g_random_double_range(50, 256); // Rango de 50 a 255 para evitar valores bajos
-            color.blue = g_random_double_range(50, 256);  // Rango de 50 a 255 para evitar valores bajo
+
+            color.red = g_random_double_range(50, 256);   
+            color.green = g_random_double_range(50, 256);
+            color.blue = g_random_double_range(50, 256);  
             color.alpha = g_random_double_range(1, 256) / 255.0; 
             addKeyValue(procesoID, color);
         }
 
     
-        // Establecer el color de fondo de la etiqueta según el color asociado al PID
+
         GdkRGBA rgbaColor = getValueByKey(procesoID);
 
-        // Obtén el color de fondo en formato hexadecimal
         int red = (int)(rgbaColor.red * 255);
         int green = (int)(rgbaColor.green * 255);
         int blue = (int)(rgbaColor.blue * 255);
 
-        gchar hexColor[8] = " "; // 9 caracteres para RGB (dos para cada componente) + terminador nulo
+        gchar hexColor[8] = " "; 
         g_snprintf(hexColor, sizeof(hexColor), "#%02X%02X%02X", red, green, blue);
 
         //printf("Proceso ID: %d, Hex Color: %s\n", procesoID, hexColor);
@@ -637,25 +633,25 @@ gpointer prueba5(gpointer data){
     int status;
     status = regcomp(&regexNew, "new\\([[:digit:]]+,[[:digit:]]+\\)", REG_EXTENDED);
     if (status != 0) {
-        // Manejar errores de compilación de la expresión regular
+        
         return NULL;
     }
 
     status = regcomp(&regexUse, "use\\([[:digit:]]+\\)", REG_EXTENDED);
     if (status != 0) {
-        // Manejar errores de compilación de la expresión regular
+        
         return NULL;
     }
 
     status = regcomp(&regexDelete, "delete\\([[:digit:]]+\\)", REG_EXTENDED);
     if (status != 0) {
-        // Manejar errores de compilación de la expresión regular
+        
         return NULL;
     }
 
     status = regcomp(&regexKill, "kill\\([[:digit:]]+\\)", REG_EXTENDED);
     if (status != 0) {
-        // Manejar errores de compilación de la expresión regular
+
         return NULL;
     }
 
@@ -684,7 +680,7 @@ gpointer prueba5(gpointer data){
         }
 
     }
-    // imprimirLista(&futuroOPT);
+
     fclose(archivo);
     actualizarEstadisticas();
     estadisticasAlg();
@@ -695,7 +691,7 @@ gpointer prueba5(gpointer data){
 
         pthread_mutex_lock(&mutex);
         while (pausado) {
-            // Espera hasta que se reanude
+    
             pthread_cond_wait(&cond, &mutex);
         }
         pthread_mutex_unlock(&mutex);
@@ -822,12 +818,10 @@ void actualizarSemilla(GtkEntry *entry, gpointer user_data) {
     char *endptr;
     long semillaP = strtol(semillaTexto, &endptr, 10);
 
-    // Si el texto es un número entero válido, hacer algo con el valor (por ejemplo, almacenarlo en una variable global)
     if (*endptr == '\0') {
         semilla = semillaP;
         g_print("Semilla: %d\n", semilla);
     } else {
-        // Si el texto no es un número entero válido, puedes mostrar un mensaje de error o manejarlo según tus necesidades
         g_print("Error: Semilla no válida\n");
     }
 }
@@ -912,7 +906,7 @@ void on_file_chooser_button_clicked(GtkWidget *button, gpointer window) {
     GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
     gint res;
 
-    dialog = gtk_file_chooser_dialog_new("Open File", GTK_WINDOW(window), action, "_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL);
+    dialog = gtk_file_chooser_dialog_new("Abrir archivo", GTK_WINDOW(window), action, "_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL);
 
     res = gtk_dialog_run(GTK_DIALOG(dialog));
     if (res == GTK_RESPONSE_ACCEPT) {
@@ -925,8 +919,6 @@ void on_file_chooser_button_clicked(GtkWidget *button, gpointer window) {
         if (file != NULL) {
             char line[256];
             while (fgets(line, sizeof(line), file) != NULL) {
-                g_print("%s", line);
-
                 //haz lu tuyo amiguito :)
             }
             fclose(file);
