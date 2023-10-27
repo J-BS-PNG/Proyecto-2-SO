@@ -2,6 +2,7 @@
 #define QUEUE_H
 #include <stdio.h>
 #include <stdlib.h>
+#include "listA.h"
 
 struct Queue {
     int *items;
@@ -103,6 +104,30 @@ void deleteFirstOccurrence(struct Queue* queue, int elementToDelete) {
     }
 }
 
+// Función para sacar un elemento por el rear de la cola
+int dequeueRear(struct Queue* queue) {
+    if (isEmpty(queue)) {
+        printf("La cola está vacía. No se puede desencolar.\n");
+        return -1;
+    } else {
+        int item = queue->items[queue->rear];
+        if (queue->front >= queue->rear) {
+            queue->front = queue->rear = -1;
+        } else {
+            queue->rear--;
+        }
+        return item;
+    }
+}
+
+// Funcion meter datos de una lista a una cola
+void enqueueList(struct Queue* queue, struct Lista *list){
+    imprimirLista(list);
+    for(int i = 0; i < list->longitud; i++){
+        enqueue(queue, list->datos[i]);
+    }
+}
+
 void printQueue(struct Queue* queue) {
     if (isEmpty(queue)) {
         printf("La cola está vacía.\n");
@@ -114,5 +139,14 @@ void printQueue(struct Queue* queue) {
         printf("%d ", queue->items[i]);
     }
     printf("\n");
+}
+
+void freeQueue(struct Queue* queue) {
+    if (queue != NULL) {
+        // Liberar el arreglo de elementos
+        free(queue->items);
+        // Liberar la estructura de la cola
+        free(queue);
+    }
 }
 #endif

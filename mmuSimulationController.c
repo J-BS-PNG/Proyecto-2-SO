@@ -673,7 +673,7 @@ gpointer prueba5(gpointer data){
     inicializarVirtual(&HDD2, 4); // Memoria virtual para los demas algoritmos
     inicializarLista(&futuroOPT, 10); // lista a futuro de procesos
     
-    if(algoritmoSeleccionado == 1 || algoritmoSeleccionado == 2){
+    if(algoritmoSeleccionado == 1 || algoritmoSeleccionado == 2 || algoritmoSeleccionado == 3){
         colaPaginas = createQueue(10);
     }
 

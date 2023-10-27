@@ -522,7 +522,7 @@
 int prueba5(){
     FILE *archivo;
     regex_t regexNew, regexUse, regexDelete, regexKill;
-    char *nombreArchivo = "simulation.txt";
+    nombreArchivo = "p.txt";
     archivo = fopen(nombreArchivo, "r");
 
     if(archivo == NULL){
@@ -557,8 +557,8 @@ int prueba5(){
 
     char linea[100];
     printf("Se encontraron las siguientes operaciones:\n");
-    inicializarRAM(&RamOPT, 20);
-    inicializarRAM(&RamAlg, 20);
+    inicializarRAM(&RamOPT,3);
+    inicializarRAM(&RamAlg, 3);
     int numeroProcesos = 10;
     inicializarLista(&listaProcesos, numeroProcesos); // Inicializar lista de procesos
     tablaPunteros = createMatrix(numeroProcesos, 3); // crear tabla de punteros
@@ -568,7 +568,7 @@ int prueba5(){
     inicializarVirtual(&HDD2, 4); // Memoria virtual para los demas algoritmos
     inicializarLista(&futuroOPT, 10); // lista a futuro de procesos
 
-    if(algoritmoSeleccionado == 1 || algoritmoSeleccionado == 2){
+    if(algoritmoSeleccionado == 1 || algoritmoSeleccionado == 2 || algoritmoSeleccionado == 3){
         colaPaginas = createQueue(10);
     }
     
@@ -601,30 +601,30 @@ int prueba5(){
         }
         contarPaginas();
         contarFragmentacion();
-        printf("Procesos: %d\n", procesos);
-        printf("Tiempo opt: %d\n", tiempoOPT);
-        printf("Ram KB opt: %d\n", ramKBOPT);
-        printf("RAM %% %d\n", porcentajeOPT);
-        printf("V-RAM KB: %d\n", virtualKBOPT);
-        printf("V-RAM %%: %d\n", porcentajeVirtualOPT);
-        printf("Paginas Cargadas: %d\n", paginasCargadaOPT);
-        printf("Paginas fuera: %d\n", paginasFueraOPT);
-        printf("Trashing opt: %d\n", trashingOpt);
-        printf("Porcentaje trashing opt: %d\n", porcentajeTrashingOpt);
-        printf("Fragmentacion opt: %d\n", fragmentacionInternaOPT);
-        printf("----------------------------------------\n");
-        printf("Procesos: %d\n", procesos);
-        printf("Tiempo alg: %d\n", tiempoAlg);
-        printf("Ram KB alg: %d\n", ramKBAlg);
-        printf("RAM %% %d\n", porcentajeAlg);
-        printf("V-RAM KB: %d\n", virtualKBAlg);
-        printf("V-RAM %%: %d\n", porcentajeVirtualAlg);
-        printf("Paginas Cargadas: %d\n", paginasCargadaAlg);
-        printf("Paginas fuera: %d\n", paginasFueraAlg);
-        printf("Trashing alg: %d\n", trashingAlg);
-        printf("Porcentaje trashing alg: %d\n", porcentajeTrashingAlg);
-        printf("Fragmentacion alg: %d\n", fragmentacionInternaAlg);
-        printf("----------------------------------------\n");
+        // printf("Procesos: %d\n", procesos);
+        // printf("Tiempo opt: %d\n", tiempoOPT);
+        // printf("Ram KB opt: %d\n", ramKBOPT);
+        // printf("RAM %% %d\n", porcentajeOPT);
+        // printf("V-RAM KB: %d\n", virtualKBOPT);
+        // printf("V-RAM %%: %d\n", porcentajeVirtualOPT);
+        // printf("Paginas Cargadas: %d\n", paginasCargadaOPT);
+        // printf("Paginas fuera: %d\n", paginasFueraOPT);
+        // printf("Trashing opt: %d\n", trashingOpt);
+        // printf("Porcentaje trashing opt: %d\n", porcentajeTrashingOpt);
+        // printf("Fragmentacion opt: %d\n", fragmentacionInternaOPT);
+        // printf("----------------------------------------\n");
+        // printf("Procesos: %d\n", procesos);
+        // printf("Tiempo alg: %d\n", tiempoAlg);
+        // printf("Ram KB alg: %d\n", ramKBAlg);
+        // printf("RAM %% %d\n", porcentajeAlg);
+        // printf("V-RAM KB: %d\n", virtualKBAlg);
+        // printf("V-RAM %%: %d\n", porcentajeVirtualAlg);
+        // printf("Paginas Cargadas: %d\n", paginasCargadaAlg);
+        // printf("Paginas fuera: %d\n", paginasFueraAlg);
+        // printf("Trashing alg: %d\n", trashingAlg);
+        // printf("Porcentaje trashing alg: %d\n", porcentajeTrashingAlg);
+        // printf("Fragmentacion alg: %d\n", fragmentacionInternaAlg);
+        // printf("----------------------------------------\n");
 
         status = regexec(&regexNew, linea, 0, NULL, 0);
         if (status == 0) {
@@ -650,21 +650,23 @@ int prueba5(){
             operacionKill(linea); 
         }
         // printQueue(colaPaginas);
-        sleep(1);
+        sleep(5);
         // printf("Lista de procesosos a Futuro :");
         // imprimirLista(&futuroOPT);
-        // printf("Ram de los OPT\n");
-        // imprimirRAMPaginas(&RamOPT);
-        // imprimirVirtual(&HDD1);
-        // printf("Ram de los algoritmos\n");
-        // imprimirRAMPaginas(&RamAlg);
-        // imprimirVirtual(&HDD2);
+        printf("Ram de los OPT\n");
+        imprimirRAMPaginas(&RamOPT);
+        imprimirVirtual(&HDD1);
+        printf("Ram de los algoritmos\n");
+        imprimirRAMPaginas(&RamAlg);
+        imprimirVirtual(&HDD2);
         
         // imprimirLista(&listaProcesos);
         // printf("Tabla de Paginas OPT\n");
         // printMatrix(&tablaPaginasOPT);
-        // printf("Tabla de Paginas ALG\n");
-        // printMatrix(&tablaPaginasAlg);
+        printf("Tabla de Paginas ALG\n");
+        printMatrix(&tablaPaginasAlg);
+        printf("Cola \n");
+        printQueue(colaPaginas);
     }
     //liberar memoria
     regfree(&regexDelete);

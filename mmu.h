@@ -34,7 +34,7 @@ struct Matrix tablaPaginasAlg; // tabla de pagina, puntero, esta en memeoria, Di
 
 struct Lista futuroOPT; // lista de procesos
 
-int algoritmoSeleccionado = 4;
+int algoritmoSeleccionado = 3;
 
 char *nombreArchivo = NULL; // Nombre de txt
 
@@ -245,7 +245,33 @@ void algoritmoSC(int pagina, int ptr){
     replacePageOPT(&tablaPaginasAlg, &RamAlg, &HDD2, paginaCambio, pagina, numeroProceso);
 }
 
+void borrarBitMRU(){
+    if(tablaPaginasAlg.size == 0) return;
+    for(int i = 0; i < tablaPaginasAlg.size; i++){
+        if(tablaPaginasAlg.data[i][5] == 1){
+            tablaPaginasAlg.data[i][5] = 0;
+            break;
+        }
+    }
+}
+
+void marcarPaginaMRU(int pagina){
+    for(int i = 0; i < tablaPaginasAlg.size; i++){
+        if(tablaPaginasAlg.data[i][0] == pagina){
+            tablaPaginasAlg.data[i][5] = 1;
+            break;
+        }
+    }
+}
+
 // int actualMRU = 0;
+void algoritmoMRU2(int pagina, int ptr){
+    int paginaCambio = dequeueRear(colaPaginas);
+    int numeroProceso = getProcessElementPtr(&tablaPunteros, ptr);
+    replacePageOPT(&tablaPaginasAlg, &RamAlg, &HDD2, paginaCambio, pagina, numeroProceso);
+    borrarBitMRU();
+    marcarPaginaMRU(colaPaginas->items[colaPaginas->rear]);
+}
 
 void algoritmoMRU(int pagina, int ptr){
     int paginaCambio = 0;
@@ -267,19 +293,15 @@ void algoritmoMRU(int pagina, int ptr){
 
 void AlgoritmoRamdon(int pagina, int ptr, struct Lista *paginasUsadas){
     struct Lista auxPaginas;
-    //struct Lista ordePAginas;
     inicializarLista(&auxPaginas, 10);
     for(int i = 0; i < RamAlg.capacidad; i++){
         if(RamAlg.datos2[i] != -1 && obtenerIndice(paginasUsadas, RamAlg.datos2[i]) == -1){
             agregarElemento(&auxPaginas, RamAlg.datos2[i]);
         }
     }
-    // imprimirLista(&auxPaginas);
     agregarElemento(paginasUsadas, pagina);
     // se obtiene una pagina random
     int paginaRadom = obtenerElemento(&auxPaginas, rand()%auxPaginas.longitud);
-
-    // printf("Pagina a reemplazar: %d\t pagina entrada: %d\n", paginaRadom, pagina);
     //obtiene el proceso 
     int numeroProceso = getProcessElementPtr(&tablaPunteros, ptr);
     replacePageOPT(&tablaPaginasAlg, &RamAlg, &HDD2, paginaRadom, pagina, numeroProceso);
@@ -299,23 +321,13 @@ void algoritmoRemplazoUsar(int opcion, int pagina, int ptr, struct Lista *pagina
             //Second chance
             break;
         case 3:
-            algoritmoMRU(pagina, ptr);
+            algoritmoMRU2(pagina, ptr);
             //MRU
             break;
         case 4:
             AlgoritmoRamdon(pagina, ptr, paginasUsadas);
             //RDN
             break;
-    }
-}
-
-void borrarBitMRU(){
-    if(tablaPaginasAlg.size == 0) return;
-    for(int i = 0; i < tablaPaginasAlg.size; i++){
-        if(tablaPaginasAlg.data[i][5] == 1){
-            tablaPaginasAlg.data[i][5] = 0;
-            break;
-        }
     }
 }
 
@@ -362,7 +374,7 @@ void operacionNew(const char *cadena){
         liberarLista(&paginasUsadas);
     }
     int bit = 0;
-    if(algoritmoSeleccionado == 2 || algoritmoSeleccionado == 3) bit = 1; 
+    if(algoritmoSeleccionado == 2) bit = 1; 
     
     // LLenar RAM por parte dee los demas algoritmos
     while(ocupa2 > 0){
@@ -371,20 +383,21 @@ void operacionNew(const char *cadena){
         int dirMemoria = agregarElementoRAM(&RamAlg, proceso, tablaPaginasAlg.amount);
         
         // Esta linea pasa si se hace el algoritmo de MRU, para borrar en el que tenia el bit marcado
-        if(algoritmoSeleccionado == 3) borrarBitMRU();
-        
         //Se empieza a llenar la lista con las paginas como van entrando
-        if(algoritmoSeleccionado == 1 || algoritmoSeleccionado == 2) enqueue(colaPaginas, tablaPaginasAlg.amount);
+        if(algoritmoSeleccionado == 1 || algoritmoSeleccionado == 2 || algoritmoSeleccionado == 3) enqueue(colaPaginas, tablaPaginasAlg.amount);
         appendElementPagina(&tablaPaginasAlg, ptr, 1, dirMemoria, tiempoAlg, bit);
         tiempoAlg++;
         ocupa2--;
     }
 
+    if(algoritmoSeleccionado == 3){
+            borrarBitMRU();
+            marcarPaginaMRU(colaPaginas->items[colaPaginas->rear]);
+    }
+
     // se hace el algoritmo de reemplazo si el ocupa es mayor a 0
     if(ocupa2 > 0){
-        // printf("No hay espacio en RAM usar paginacion\n");
         // se hace algoritmo de reemplazo
-        // AlgoritmoOtros();
         struct Lista paginasUsadasAlg;
         inicializarLista(&paginasUsadasAlg, 10);
         for(int i = 0; i < ocupa2; i++){
@@ -393,8 +406,17 @@ void operacionNew(const char *cadena){
             printf("Numero a reemplazar: %d\n", numPagina);
             appendElementPagina(&tablaPaginasAlg, ptr, 0, dirVirtual, tiempoAlg, bit);
             algoritmoRemplazoUsar(algoritmoSeleccionado, numPagina, ptr, &paginasUsadasAlg);
+            if(algoritmoSeleccionado == 3) agregarElemento(&paginasUsadasAlg, numPagina);
             tiempoAlg+=5;
             trashingAlg+=5;
+        }
+        // meter paginas del MRU
+        if(algoritmoSeleccionado == 3){
+            printf("Paginas usadas\n");
+            imprimirLista(&paginasUsadasAlg);
+            enqueueList(colaPaginas, &paginasUsadasAlg);
+            borrarBitMRU();
+            marcarPaginaMRU(colaPaginas->items[colaPaginas->rear]);
         }
         liberarLista(&paginasUsadasAlg);
     }
@@ -413,6 +435,8 @@ void verificacionRam(struct Matrix *auxPaginas, int ptr, int opcion){
     inicializarLista(&paginasUsadas, 10);
     struct Lista paginasUsadasAlg;
     inicializarLista(&paginasUsadasAlg, 10);
+    // printf("Princicpio use \n");
+    // printQueue(colaPaginas);
     // if(opcion == 1){
     //     printf("Tabla de paginas Fuera for\n");
     //     printMatrix(&tablaPaginasAlg);
@@ -426,8 +450,12 @@ void verificacionRam(struct Matrix *auxPaginas, int ptr, int opcion){
                     auxPaginas->data[i][5] = 1;
                 }else if(algoritmoSeleccionado == 3 && opcion != 0){
                     // Se setea el bit de MRU
-                    borrarBitMRU();
-                    auxPaginas->data[i][5] = 1;
+                    deleteFirstOccurrence(colaPaginas, auxPaginas->data[i][0]);
+                    agregarElemento(&paginasUsadasAlg, auxPaginas->data[i][0]);
+                    if(auxPaginas->data[i][5] == 1){
+                        borrarBitMRU();
+                        marcarPaginaMRU(colaPaginas->items[colaPaginas->rear]);
+                    }
                 }
 
                 
@@ -471,6 +499,10 @@ void verificacionRam(struct Matrix *auxPaginas, int ptr, int opcion){
                         if(algoritmoSeleccionado == 1 || algoritmoSeleccionado == 2){
                             //Se empieza a llenar la lista con las paginas como van entrando
                             enqueue(colaPaginas, auxPaginas->data[i][0]);
+                        }else if(algoritmoSeleccionado == 3){
+                            // Se setea el bit de MRU
+                            borrarBitMRU();
+                            marcarPaginaMRU(colaPaginas->items[colaPaginas->rear]);
                         } 
                     }else{
                         printf("Numero a reemplazar: %d\n", auxPaginas->data[i][0]);
@@ -482,8 +514,7 @@ void verificacionRam(struct Matrix *auxPaginas, int ptr, int opcion){
                     if (algoritmoSeleccionado == 2 && opcion != 0){
                         auxPaginas->data[i][5] = 1;
                     }else if (algoritmoSeleccionado == 3 && opcion != 0){
-                        borrarBitMRU();
-                        auxPaginas->data[i][5] = 1;
+                        agregarElemento(&paginasUsadas, auxPaginas->data[i][0]);
                     }
                     tiempoAlg+=5;
                     trashingAlg+=5;
@@ -493,8 +524,20 @@ void verificacionRam(struct Matrix *auxPaginas, int ptr, int opcion){
         }else{
             if(principio == 1) break;
         }
-        liberarLista(&paginasUsadas);
     }
+    // printf("Final use: \n");
+    // printQueue(colaPaginas);
+    if(algoritmoSeleccionado == 3 && opcion != 0){
+        // printf("Paginas usadas\n");
+        // imprimirLista(&paginasUsadas);
+        enqueueList(colaPaginas, &paginasUsadasAlg);
+        borrarBitMRU();
+        marcarPaginaMRU(colaPaginas->items[colaPaginas->rear]);
+        // printf("Final use2: \n");
+        // printQueue(colaPaginas);
+    }
+    liberarLista(&paginasUsadas);
+    // liberarLista(&paginasUsadasAlg);
 }
 
 void operacionUse(const char *cadena){
@@ -720,5 +763,6 @@ void liberarMemoriaPrograma(){
     liberarVirtual(&HDD1);
     liberarVirtual(&HDD2);
     liberarLista(&futuroOPT);
+    freeQueue(colaPaginas);
 }
 #endif

@@ -23,7 +23,7 @@ struct start
     int amoutOperations; // Number of operations
 };
 
-struct start crearPreparación(int seed, enum algoritm option, FILE *file, int NumberProcess, int amoutOperations){
+struct start crearPreparación(int seed, enum algoritm option, char *file, int NumberProcess, int amoutOperations){
     struct start start;
     start.seed = seed;
     start.option = option;
