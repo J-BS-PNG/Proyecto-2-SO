@@ -311,12 +311,12 @@ struct Matrix deleteElementPage(struct Matrix *matrix, struct RAM *ram, struct V
     int posMRU = 0;
     for(int i = 0; i < matrix->size; i++){
         if(matrix->data[i][1] != ptr){
-            if(algSeleccionado == 3){
-                if(matrix->data[i][2] == 1 && matrix->data[i][4] > timeMRU){
-                    timeMRU = matrix->data[i][4];
-                    posMRU = i;
-                }
-            }
+            // if(algSeleccionado == 3){
+            //     if(matrix->data[i][2] == 1 && matrix->data[i][4] > timeMRU){
+            //         timeMRU = matrix->data[i][4];
+            //         posMRU = i;
+            //     }
+            // }
             appendElementPaginaM(&matrixAux, position, matrix->data[i][0], matrix->data[i][1], matrix->data[i][2], matrix->data[i][3], matrix->data[i][4], matrix->data[i][5]);
             position++;
         }else{
@@ -327,7 +327,7 @@ struct Matrix deleteElementPage(struct Matrix *matrix, struct RAM *ram, struct V
             }
             
             // Se borran paginas que puedan existir en la cola
-            if(algSeleccionado == 1 || algSeleccionado == 2){
+            if(algSeleccionado == 1 || algSeleccionado == 2 || algSeleccionado == 3){
                 deleteFirstOccurrence(cola, matrix->data[i][0]);
             }
         }
